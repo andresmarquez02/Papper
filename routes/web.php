@@ -1,4 +1,6 @@
 <?php
+    Route::get('/', 'login_register@index');
+
 Route::middleware(['guest'])->group(function () {
     Route::get('/', 'login_register@index');
     Route::post('login', 'login_register@store');
