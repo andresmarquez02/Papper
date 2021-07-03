@@ -1,5 +1,6 @@
 <?php
-    Route::get('/', 'login_register@index');
+
+use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/', 'login_register@index');
