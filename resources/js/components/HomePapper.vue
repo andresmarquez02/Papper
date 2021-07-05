@@ -106,10 +106,6 @@
 export default {
     mounted() {
         this.pregg();
-        let item = localStorage.getItem('grupo');
-        if(item != -10){
-            this.$router.push('/inicio');
-        }
     },
     data(){
         return{

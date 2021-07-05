@@ -43,13 +43,10 @@ class login_register extends Controller
         }
         else{
             $contrasena = bcrypt($request->contrasena);
-            $fecha = date('Y-m-d');
             DB::table('users')->insert([
                 'nombre_apellido' => $request->an,
                 'email' => $request->correo,
                 'password' => $contrasena,
-                'create_at' => $fecha,
-                'update_at' => $fecha
             ]);
         }
         if(Auth::attempt(['email' => $request->correo, 'password' => $request->contrasena])){

@@ -26,9 +26,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/papper/notificaciones', 'usuarioController@notificaciones');
     Route::post('/papper/preguntas/save/logs', 'usuarioController@store');
     Route::post('/papper/filtrado/{grupo}/{palabra}', 'usuarioController@filtrado');
+    Route::get('/papper/like/comentarios/{datos}/{like}', 'usuarioController@likes_comentarios');
 });
 // Route::get('/papper/like/{datos}/{like}', 'usuarioController@likes');
 // Route::get('/papper/preguntas/{grupo}', 'usuarioController@create');
 
-Route::get('/papper/like/comentarios/{datos}/{like}', 'usuarioController@likes_comentarios');
 

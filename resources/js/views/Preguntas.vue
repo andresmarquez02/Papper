@@ -2,8 +2,8 @@
     <div class="pt-3 pb-3 px-md-5">
         <div>
             <h1 class="text-dark px-4 cursor-pointer text-decoration"
-            v-for="referencia in $store.state.referencia_grupo" v-on:click="per_grupo(referencia.id)">
-            {{ referencia.grupo }}</h1>
+            v-on:click="per_grupo($store.state.referencia_grupo.id)">
+            {{ $store.state.referencia_grupo.grupo }}</h1>
         </div>
         <div class="shadow bg-light my-3 px-4 pt-4 pb-2" v-if="mi_like(preguntas.id)"
         v-for="preguntas in $store.state.preguntas">

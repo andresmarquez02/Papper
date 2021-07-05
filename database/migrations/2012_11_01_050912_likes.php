@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Paises extends Migration
+class Likes extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,13 @@ class Paises extends Migration
      */
     public function up()
     {
-        Schema::create('paises', function (Blueprint $table) {
+        Schema::create('likes', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('pais');
+            $table->string('like', 2);
+            $table->bigInteger('id_usuario');
+            $table->bigInteger('id_admin');
+            $table->bigInteger('id_pregunta');
+            $table->timestamps();
         });
     }
 
@@ -26,6 +30,7 @@ class Paises extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('likes');
+
     }
 }

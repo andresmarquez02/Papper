@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Regiones extends Migration
+class Comentarios extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,14 @@ class Regiones extends Migration
      */
     public function up()
     {
-        Schema::create('regiones', function (Blueprint $table) {
+        Schema::create('comentarios', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('id_pais');
-            $table->string('region');
+            $table->longText('comentario');
+            $table->bigInteger('id_usuario');
+            $table->bigInteger('id_admin');
+            $table->bigInteger('id_pregunta');
+            $table->bigInteger('likes');
+            $table->timestamps();
         });
     }
 
@@ -27,6 +31,6 @@ class Regiones extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('comentarios');
     }
 }

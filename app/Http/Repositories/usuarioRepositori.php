@@ -67,7 +67,6 @@ class usuarioRepositori implements usuarioInterface
                     'vista' => 'No',
                 ]);
                 $cantidad_likes = DB::table('preguntas')->where('id',$datos)->value('likes');
-
             }
             DB::commit();
             return response()->json($cantidad_likes);
@@ -150,8 +149,6 @@ class usuarioRepositori implements usuarioInterface
             'id_usuario' => Auth::user()->id,
             'likes' => 0,
             'comentarios' => 0,
-            'create_at' => $fecha,
-            'update_at' => $fecha,
         ]);
         $publicado = "Publicado";
         return $publicado;
@@ -164,7 +161,7 @@ class usuarioRepositori implements usuarioInterface
                 'titulo'=> $request->titulo,
                 'descripcion'=> $request->descripcion,
                 'id_grupo'=> $request->id_grupo,
-                'update_at'=>$fecha
+                'updated_at'=>$fecha
             ]);
             DB::commit();
             return "Exito";

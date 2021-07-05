@@ -316,7 +316,7 @@ export default {
         },
         denunciar(){
             setTimeout(()=>{
-                alertify.success("Comentario denunciada");
+                alertify.success("Comentario denunciado");
             },2000);
         },
         atras(){
