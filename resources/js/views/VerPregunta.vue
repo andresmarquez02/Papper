@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="shadow border my-3 px-4 pt-4 pb-2 bg-white"
-        v-for="comentario in $store.state.commentarios">
+        v-for="comentario in $store.state.commentarios" :key="comentario.id">
             <div class="row m-0">
                 <div class="col-6 p-0">
                     <span>{{ comentario.nombre_apellido }}</span>
@@ -290,6 +290,9 @@ export default {
             this.id_comentario = id;
         },
         async eliminar(){
+            let pre = document.getElementById('carga');
+            pre.classList.remove('d-none');
+            pre.classList.add('d-flex');
             let token = document.querySelector('meta#token').getAttribute('content');
             try{
                 const consulta = await fetch('eliminar_comentario/'+this.id_comentario,{
@@ -306,7 +309,8 @@ export default {
                             this.$store.state.commentarios.splice(i,1);
                         }
                     }
-                    alertify.success("Publicacion eliminada con exito.");
+                    pre.classList.add('d-none');
+                    alertify.success("Comentario eliminado con exito.");
                 }
                 else{
                     alertify.error("Error. Intente de nuevo.");

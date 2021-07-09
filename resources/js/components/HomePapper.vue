@@ -35,7 +35,7 @@
                                     <i class="fa fa-retweet bg-dark text-white rounded-circle p-2" v-on:click="notificaciones_recall()"
                                     aria-hidden="true"></i>
                                 </p>
-                                <a class="dropdown-item" href="#" v-for="notificacion in $store.state.notificaciones">
+                                <a class="dropdown-item" href="#" v-for="notificacion in $store.state.notificaciones" :key="notificacion.id">
                                     {{ notificacion.descripcion }}
                                 </a>
                                 <a class="dropdown-item" href="#" v-if="$store.state.notificaciones == ''">
@@ -83,7 +83,7 @@
                                     <i class="fa fa-retweet bg-dark text-white rounded-circle p-2" v-on:click="notificaciones_recall()"
                                     aria-hidden="true"></i>
                                 </p>
-                                <a class="dropdown-item" href="#" v-for="notificacion in $store.state.notificaciones">
+                                <a class="dropdown-item" href="#" v-for="notificacion in $store.state.notificaciones" :key="notificacion.id">
                                     {{ notificacion.descripcion }}
                                 </a>
                                 <a class="dropdown-item" href="#" v-if="$store.state.notificaciones == ''">
