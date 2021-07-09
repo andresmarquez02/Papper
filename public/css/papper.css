@@ -1,4 +1,4 @@
-
+@import url('https://fonts.googleapis.com/css?family=Nerko+One');
 :root{
     /* #7b062f */
     /* #fb9396 */
@@ -9,12 +9,8 @@
     --secondary-white: #1895cf;
     --white: white;
 }
-@font-face {
-    font-family: Papper;
-    src: url('../font/NerkoOne-Regular.ttf');
-}
 body{
-    font-family: Papper,sans-serif;
+    font-family: 'Nerko One', sans-serif;
     font-size: 1.1rem;
 }
 .btn{
