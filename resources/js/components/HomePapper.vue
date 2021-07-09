@@ -106,6 +106,7 @@
 export default {
     mounted() {
         this.pregg();
+        location.hash = "/inicio";
     },
     data(){
         return{
