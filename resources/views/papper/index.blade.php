@@ -44,6 +44,7 @@
         //     pre.classList.remove('d-flex');
         //     pre.classList.add('d-none');
         // }
+        window.location.hash="no-back-button";
     </script>
     <script src="{{asset('alertify/lib/alertify.min.js')}}"></script>
     <script src="{{asset('js/app.js')}}"></script>
