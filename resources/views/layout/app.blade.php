@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{{secure_asset('fontawesome-free-5.15.1-web/css/solid.css')}}">
     <link rel="stylesheet" href="{{secure_asset('fontawesome-free-5.15.1-web/css/v4-shims.css')}}">
     <link rel="stylesheet" href="{{secure_asset('fontawesome-free-5.15.1-web/css/brands.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
         @else
         <link rel="shortcut icon" href="{{asset("Papper.png")}}">
         <link rel="stylesheet" href="{{asset('css/app.css')}}">
