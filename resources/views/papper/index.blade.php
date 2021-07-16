@@ -1,6 +1,6 @@
 @extends('layout.app')
 @section('content')
-<body class="bg-white" onload="atras()">
+<body class="bg-white">
     <div id="app">
         <papper />
     </div>
@@ -34,16 +34,16 @@
                                 </div>
                             </div> --}}
     <script>
-        let pre = document.getElementById('carga')
-        pre.classList.remove('d-none');
-        pre.classList.add('d-flex');
-        function atras(){
-            window.location.hash="not-hash-back";
-            window.location.hash="not-hash-again-back"
-            window.onhashchange=function(){window.location.hash="no-back-button";}
-            pre.classList.remove('d-flex');
-            pre.classList.add('d-none');
-        }
+        // let pre = document.getElementById('carga')
+        // pre.classList.remove('d-none');
+        // pre.classList.add('d-flex');
+        // function atras(){
+        //     window.location.hash="not-hash-back";
+        //     window.location.hash="not-hash-again-back"
+        //     window.onhashchange=function(){window.location.hash="no-back-button";}
+        //     pre.classList.remove('d-flex');
+        //     pre.classList.add('d-none');
+        // }
     </script>
     <script src="{{asset('alertify/lib/alertify.min.js')}}"></script>
     <script src="{{asset('js/app.js')}}"></script>
