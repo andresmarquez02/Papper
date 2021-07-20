@@ -35,7 +35,12 @@
                             <label for="" class="text-dark ">Contraseña</label>
                         </div>
                         <div class="d-flex justify-content-center">
-                        <input type="password" maxlength="254" minlenght="5" class="form-control bg-light-50 rounded-pill w-75-90" v-model="contrasena">
+                            <div class="input-group w-75-90">
+                              <input :type="password" maxlength="254" minlenght="5" class="form-control bg-light-50 rounded-pill-left w-75-90" v-model="contrasena" aria-label="" aria-describedby="button-addon2">
+                              <div class="input-group-append">
+                                <button class="btn btn-primary" v-on:click="ver_contrasena()" type="button" id="button-addon2 rounded-pill-right">ver</button>
+                              </div>
+                            </div>
                         </div>
                         <div class="d-flex justify-content-center">
                             <small id="helpId" class="text-white">La contraseña debe tener minimo 5 caracteres</small>
@@ -66,10 +71,15 @@ export default {
         return {
             nombreApellido: '',
             correo: '',
-            contrasena: ''
+            contrasena: '',
+            password: 'password'
         }
     },
     methods: {
+        ver_contrasena(){
+            if(this.password == 'password')this.password = 'text';
+            else this.password = 'password';
+        },
         async register(){
             const regular = {
                 correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/,

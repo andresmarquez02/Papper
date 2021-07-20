@@ -61,20 +61,20 @@
                 <div>
                     <ul class="nav my-1">
                         <li class="nav-item active mr-2" v-on:click.prevent="por_grupo(0)">
-                            <router-link :to="{name: 'inicio'}" class="nav-link btn btn-light" data-toggle="tooltip"
+                            <router-link :to="{name: 'inicio'}" class="nav-link  text-white-50" data-toggle="tooltip"
                             data-placement="top" title="Inicio">
                             <i class="fa fa-home" aria-hidden="true"></i>
                             <span class="sr-only">Inicio</span></router-link>
                         </li>
                         <li class="nav-item active mr-2" v-on:click.prevent="por_grupo('-2')">
-                            <router-link :to="{name: 'inicio'}" class="nav-link btn btn-light" data-toggle="tooltip"
+                            <router-link :to="{name: 'perfil'}" class="nav-link text-white-50" data-toggle="tooltip"
                              data-placement="top" title="Mi perfil">
                             <i class="fa fa-user-circle" aria-hidden="true"></i>
                             <span class="sr-only">Mi perfil</span></router-link>
                         </li>
                         <li class="nav-item dropdown mr-2" data-toggle="tooltip" data-placement="top"
                             title="Notificaciones">
-                            <span class="nav-link btn btn-light" type="button" id="triggerIds" data-toggle="dropdown"
+                            <span class="nav-link text-white-50" type="button" id="triggerIds" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-bell" aria-hidden="true"></i>
                                 <span class="sr-only">Notificaciones</span>
@@ -95,7 +95,7 @@
                             </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn btn-light" href="./logout" data-toggle="tooltip" data-placement="top"
+                            <a class="nav-link text-white-50" href="./logout" data-toggle="tooltip" data-placement="top"
                             title="Salir">
                             <i class="fa fa-sign-out" aria-hidden="true"></i>
                             <span class="sr-only">Salir</span></a>
