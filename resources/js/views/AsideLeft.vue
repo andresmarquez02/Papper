@@ -6,7 +6,7 @@
             <li class="list-group-item dropdown">
                 <div class="dropdown-toggle" id="dropdownId" data-toggle="dropdown"
                  aria-haspopup="true" aria-expanded="false">Grupo</div>
-                    <div class="dropdown-menu dropright w-100" style="min-width:11rem;max-height:14rem;overflow-y:auto"
+                    <div class="dropdown-menu bg-white dropright w-100" style="min-width:11rem;max-height:14rem;overflow-y:auto"
                     aria-labelledby="dropdownId">
                     <span class="dropdown-item p-1" v-for="grupo in $store.state.grupos" v-on:click="por_grupo(grupo.id)">
                         {{ grupo.grupo }}
