@@ -5,7 +5,7 @@ import Registro from './views/Registro.vue'
 import Preguntas from './components/Inicio.vue'
 import Comentarios from './components/Comentarios.vue'
 import Cuatro from './components/404.vue'
-
+import MiPerfil from './components/Perfil.vue'
 Vue.use(VueRouter);
 export default new VueRouter({
     base: process.env.BASE_URL,
@@ -29,6 +29,11 @@ export default new VueRouter({
             path:'/inicio',
             name: 'inicio',
             component: Preguntas
+        },
+        {
+            path:'/perfil',
+            name: 'perfil',
+            component: MiPerfil
         },
         {
             path:'/no-back-button',

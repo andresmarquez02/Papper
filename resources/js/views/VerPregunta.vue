@@ -53,13 +53,13 @@
         </div>
         <div class="my-3 px-4 pt-4 pb-2"
         v-if="$store.state.commentarios == ''">
-            <h2 class="text-center">Sin comentarios</h2>
+            <h2 class="text-center">Sin comentarios...</h2>
         </div>
         <div class="my-3 px-lg-4 pt-4 pb-2">
             <div class="col-12 btn-group p-0 btn-group-toggle">
-                <input type="text" class="form-control col-md-11 col-sm-10 col-10" placeholder="comentario..."
+                <input type="text" class="form-control rounded-0 rounded-left col-md-11 col-sm-10 col-10" placeholder="comentario..."
                 v-model="$store.state.comentario" v-on:keyup.enter="comentar()" maxlength="255" minlength="1">
-                <button type="button" v-on:click="comentar()" class="col-md-1 col-sm-2 col-2 btn btn-outline-primary">
+                <button type="button" v-on:click="comentar()" class="col-md-1 col-sm-2 col-2 btn btn-outline-light">
                     <i class="fa fa-paper-plane" aria-hidden="true"></i>
                 </button>
             </div>
@@ -74,7 +74,7 @@
                             </button>
                     </div>
                     <div class="modal-body">
-                        <h2>Esta seguro de eliminar esta publicacion?</h2>
+                        <h2>Esta seguro de eliminar este comentario?</h2>
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
                         <div>
@@ -238,7 +238,7 @@ export default {
             this.$store.state.no_normal = "d-none";
         },
         comentar(){
-            const regular =  /^.{1,240}$/ ;
+            const regular =  /^.{1,400000000}$/ ;
             let pre = document.getElementById('carga')
             if(regular.test(this.$store.state.comentario)){
                 // $store.state.pregunta.id;
@@ -247,7 +247,7 @@ export default {
                 this.$store.dispatch('enviar_comentario');
             }
             else{
-                alertify.error("No puede escribir mas de 240 caracteres por comentario :)");
+                alertify.error("Comentario muy extenso por favor envielo en dos partes");
             }
         },
         modal_cambiar(comentario,id_comentario){
@@ -309,10 +309,13 @@ export default {
                             this.$store.state.commentarios.splice(i,1);
                         }
                     }
+                    pre.classList.remove('d-flex');
                     pre.classList.add('d-none');
                     alertify.success("Comentario eliminado con exito.");
                 }
                 else{
+                    pre.classList.remove('d-flex');
+                    pre.classList.add('d-none');
                     alertify.error("Error. Intente de nuevo.");
                 }
             }

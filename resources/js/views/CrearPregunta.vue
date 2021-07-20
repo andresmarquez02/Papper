@@ -4,7 +4,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Nueva Publicación</h5>
+                        <h5 class="modal-title h4">Nueva Publicación</h5>
                             <button type="button" class="close" id="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -27,7 +27,7 @@
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
-                        <button type="button" v-on:click="publicar()" class="btn btn-outline-primary rounded-pill">Guardar</button>
+                        <button type="button" v-on:click="publicar()" class="btn btn-outline-dark rounded-pill">Guardar</button>
                     </div>
                 </div>
             </div>
@@ -45,11 +45,12 @@ export default {
     },
     methods: {
         async publicar(){
-            const regular =  /^[a-zA-ZÁ-ÿ\s]{1,254}$/,
-            regularNumber =  /^\d{1,15}$/ ;
+            const regular =  /^[a-zA-ZÁ-ÿ0-9]{1,254}$/,
+            regularNumber =  /^\d{1,15}$/;
+            const regularDesc = /^.{1,400000000}$/;
             let token = document.querySelector('meta#token').getAttribute('content');
             this.$store.state.token = token;
-            if(regular.test(this.titulo) && regularNumber.test(this.grupo) && this.descripcion !== ""){
+            if(regular.test(this.titulo) && regularNumber.test(this.grupo) && regularDesc.test(this.descripcion)){
                 if(regular.test(this.titulo)){
                     if(regularNumber.test(this.grupo)){
                         try{
@@ -94,13 +95,13 @@ export default {
                 }
             }
             else{
-                if(!regular.test(this.titulo) && regular.test(this.descripcion) && regularNumber.test(this.grupo)){
+                if(!regular.test(this.titulo)){
                     alertify.error('Pon un titulo a tu publicación');
                 }
-                if(!regularNumber.test(this.grupo) && regular.test(this.titulo) && regular.test(this.descripcion)){
+                else if(!regularNumber.test(this.grupo)){
                     alertify.error('Selecciona un grupo');
                 }
-                if(!regular.test(this.descripcion) && regularNumber.test(this.grupo) && regular.test(this.titulo)){
+                else if(!regular.test(this.descripcion)){
                     alertify.error('Crea una descripción para así poder tener más información de lo que quieres');
                 }
                 else{

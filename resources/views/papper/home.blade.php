@@ -19,7 +19,6 @@
         });
         pre.classList.remove('d-flex');
         pre.classList.add('d-none');
-        location.hash ="/inicio"
     </script>
 </body>
 @endsection

@@ -18,6 +18,7 @@ Vue.component('ver-pregunta', require('./views/VerPregunta.vue').default);
 Vue.component('aside-left', require('./views/AsideLeft.vue').default);
 Vue.component('aside-right', require('./views/AsideRight.vue').default);
 Vue.component('inicio', require('./components/Inicio.vue').default);
+Vue.component('perfil', require('./components/Perfil.vue').default);
 
 import router from './rutas.js'
 import store from './store.js'

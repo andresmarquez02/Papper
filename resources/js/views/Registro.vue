@@ -1,15 +1,6 @@
 <template>
-    <div class="paddin_height">
-        <nav class="navbar navbar-expand-sm navbar-dark w-100 shadow-lg index opacity-0 h-3rem">
-            <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-                <li class="nav-item">
-                    <span class="mr-2">
-                            <button class="btn btn-secondary rounded-pill">gost</button>
-                    </span>
-                </li>
-            </ul>
-        </nav>
-        <div class="d-flex justify-content-center align-items-center vh-md-100-form vh-sm-100-form">
+    <div style="padding-top:4rem">
+        <div class="d-flex justify-content-center align-items-center" style="min-height:calc(100vh - 4rem);">
             <div class="bg-light-50 shadow-double w-50-75 rounded-xl">
                 <div class="form-group mt-3">
                     <div class="d-flex justify-content-center">

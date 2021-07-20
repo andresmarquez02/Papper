@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <main class="mt-5 pt-5">
+    <div class="pt-5">
+        <main class="pt-5">
             <div class="row m-0 text-dark">
                 <div class="col-md-2 col-sm-12"></div>
                 <div class="col-lg-10 col-md-12 col-sm-12">

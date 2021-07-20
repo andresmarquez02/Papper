@@ -1,11 +1,11 @@
 <template>
     <div class="pt-3 pb-3 px-md-5">
-        <div>
-            <h1 class="text-dark px-4 cursor-pointer text-decoration"
+        <div v-if="$store.state.referencia_grupo.grupo !== null">
+            <h2 class="text-white px-4 cursor-pointer text-decoration"
             v-on:click="per_grupo($store.state.referencia_grupo.id)">
-            {{ $store.state.referencia_grupo.grupo }}</h1>
+            {{ $store.state.referencia_grupo.grupo !== null ? $store.state.referencia_grupo.grupo : "" }}</h2>
         </div>
-        <div class="shadow bg-light my-3 px-4 pt-4 pb-2" v-if="mi_like(preguntas.id)"
+        <div class="shadow bg-light-50 my-3 px-4 pt-4 pb-2" v-if="mi_like(preguntas.id)"
         v-for="preguntas in $store.state.preguntas">
             <div class="row m-0">
                 <div class="col-6 p-0">
@@ -73,7 +73,7 @@
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
-                        <button type="button" class="btn btn-primary"
+                        <button type="button" class="btn btn-dark rounded-pill"
                         v-on:click="cambiar()">Guardar</button>
                     </div>
                 </div>
@@ -102,7 +102,7 @@
             </div>
         </div>
         <div>
-            <h1 class="text-center text-dark px-4">{{ $store.state.no_encontro_nada }}</h1>
+            <h1 class="text-center text-white font-weight-bold px-4">{{ $store.state.no_encontro_nada }}</h1>
         </div>
     </div>
 </template>
@@ -235,9 +235,12 @@ export default {
             }
         },
         async cambiar(){
+            const regular =  /^[a-zA-ZÁ-ÿ0-9]{1,254}$/,
+            regularNumber =  /^\d{1,15}$/;
+            const regularDesc = /^.{1,400000000}$/;
             let token = document.querySelector('meta#token').getAttribute('content');
-            if(this.titulo_editar !== "" && this.descripcion_editar !== ""
-            && this.id_grupo_editar !== ""){
+            if(regular.test(this.titulo_editar) && regularDesc.test(this.descripcion_editar)
+            && regularNumber.test(this.id_grupo_editar)){
                 let formulario = new FormData();
                 formulario.append('titulo',this.titulo_editar);
                 formulario.append('descripcion',this.descripcion_editar);
@@ -261,28 +264,17 @@ export default {
                     }
                     let obj =document.getElementById('cerrarEditar');
                     obj.click();
-                    alertify.success('Publicación editada con exíto.');
+                    alertify.success('Editado con exito.');
                 }
                 else{
                      alertify.error('Error. reintente de nuevo.');
                 }
             }
             else{
-                if(this.titulo_editar === "" && this.descripcion_editar !== ""
-                && this.id_grupo_editar !== ""){
-                    alertify.error("El titulo no puede estar vacio");
-                }
-                if(this.titulo_editar !== "" && this.descripcion_editar !== ""
-                && this.id_grupo_editar !== ""){
-                    alertify.error("La descripcion no puede estar vacia");
-                }
-                if(this.titulo_editar !== "" && this.descripcion_editar !== ""
-                && this.id_grupo_editar !== ""){
-                    alertify.error("Selecciona un grupo");
-                }
-                else{
-                    alertify.error("Niguno de los campos pueden estar vacios");
-                }
+                if(!regular.test(this.titulo_editar)) alertify.error("El titulo no puede estar vacio");
+                else if(!regularDesc.test(this.descripcion_editar)) alertify.error("La descripcion no puede estar vacia");
+                else if(!regularNumber.test(this.id_grupo_editar)) alertify.error("Selecciona un grupo");
+                else alertify.error("Todos los campos deben estar llenos");
             }
         },
         modal_elimiar(id){
@@ -300,7 +292,6 @@ export default {
                 }
             });
             const resultado = await consulta.text();
-            alertify.success("Procesando...");
             if(resultado == "Exito"){
                 for(var i = 0; i < this.$store.state.preguntas.length; i++){
                     if(this.$store.state.preguntas[i].id == this.id_pregunta){
