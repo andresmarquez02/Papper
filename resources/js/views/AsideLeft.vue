@@ -2,7 +2,7 @@
     <div class="col-md-2 col-sm-12" style="word-break:break-all">
         <ul class="list-group pt-3 my-3 position-fixed-md col-lg-2 pr-0">
             <li class="list-group-item" v-on:click="por_grupo(-1)">Populares</li>
-            <li class="list-group-item" style="cursor:not-allowed !important">Recomendados</li>
+            <li class="list-group-item" v-on:click="por_grupo(7)">Recomendado</li>
             <li class="list-group-item dropdown">
                 <div class="dropdown-toggle" id="dropdownId" data-toggle="dropdown"
                  aria-haspopup="true" aria-expanded="false">Grupo</div>

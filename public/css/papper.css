@@ -21,6 +21,7 @@ ul li{
 .img_home{
     background-image: url(../img/eezy_64.svg);
     background-repeat: no-repeat;
+    background-attachment: fixed;
     background-size: cover;
     background-position: center;
     background-color: #f9a578;
@@ -29,6 +30,9 @@ ul li{
 }
 .index{
     z-index: 10;
+}
+.text-dark{
+    color:#484e53 !important;
 }
 .bg-purple{
     background-color: var(--primary-color) !important;
@@ -51,11 +55,13 @@ ul li{
 .form-control{
     font-size: 1.1rem;
     border-color: transparent;
-    background-color: #fafafa;
+    background-color: #e0dddd;
 }
 .form-control:focus{
-    box-shadow: 0 0 0 0.2rem rgba(221, 49, 169, 0.315);
+    box-shadow: 0 0 0 0.1rem rgba(194, 42, 148, 0.315);
     border-color: transparent;
+    background-color: #fafafa;
+    transition: backgroun-color .5s ease-in-out;
 }
 .w-50-75{
     width: 75%;
@@ -136,6 +142,10 @@ ul li{
 }
 .text-decoration:hover{
     text-decoration: underline;
+}
+.btn:focus{
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0) !important;
 }
 .dropdown-item{
     white-space:inherit;
@@ -282,3 +292,102 @@ ul li{
 
 }
 
+.waves-effect {
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    vertical-align: middle;
+    z-index: 1;
+    will-change: opacity, transform;
+    -webkit-transition: all 0.1s ease-out;
+    -moz-transition: all 0.1s ease-out;
+    -o-transition: all 0.1s ease-out;
+    -ms-transition: all 0.1s ease-out;
+    transition: all 0.1s ease-out; }
+    .waves-effect .waves-ripple {
+      position: absolute;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      margin-top: -10px;
+      margin-left: -10px;
+      opacity: 0;
+      background: rgba(0, 0, 0, 0.2);
+      -webkit-transition: all 0.7s ease-out;
+      -moz-transition: all 0.7s ease-out;
+      -o-transition: all 0.7s ease-out;
+      -ms-transition: all 0.7s ease-out;
+      transition: all 0.7s ease-out;
+      -webkit-transition-property: -webkit-transform, opacity;
+      -moz-transition-property: -moz-transform, opacity;
+      -o-transition-property: -o-transform, opacity;
+      -webkit-transition-property: opacity, -webkit-transform;
+      transition-property: opacity, -webkit-transform;
+      -o-transition-property: transform, opacity;
+      transition-property: transform, opacity;
+      transition-property: transform, opacity, -webkit-transform;
+      -webkit-transform: scale(0);
+      -moz-transform: scale(0);
+      -ms-transform: scale(0);
+      -o-transform: scale(0);
+      transform: scale(0);
+      pointer-events: none; }
+
+  .waves-effect.waves-light .waves-ripple {
+    background-color: rgba(255, 255, 255, 0.45); }
+
+  .waves-effect.waves-red .waves-ripple {
+    background-color: rgba(244, 67, 54, 0.7); }
+
+  .waves-effect.waves-yellow .waves-ripple {
+    background-color: rgba(255, 235, 59, 0.7); }
+
+  .waves-effect.waves-orange .waves-ripple {
+    background-color: rgba(255, 152, 0, 0.7); }
+
+  .waves-effect.waves-purple .waves-ripple {
+    background-color: rgba(156, 39, 176, 0.7); }
+
+  .waves-effect.waves-green .waves-ripple {
+    background-color: rgba(76, 175, 80, 0.7); }
+
+  .waves-effect.waves-teal .waves-ripple {
+    background-color: rgba(0, 150, 136, 0.7); }
+
+  html body .waves-notransition {
+    -webkit-transition: none;
+    -moz-transition: none;
+    -o-transition: none;
+    -ms-transition: none;
+    transition: none; }
+
+  .waves-circle {
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    -o-transform: translateZ(0);
+    transform: translateZ(0);
+    text-align: center;
+    width: 2.5em;
+    height: 2.5em;
+    line-height: 2.5em;
+    border-radius: 50%;
+    -webkit-mask-image: none; }
+
+  .waves-input-wrapper {
+    border-radius: 0.2em;
+    vertical-align: bottom; }
+    .waves-input-wrapper .waves-button-input {
+      position: relative;
+      top: 0;
+      left: 0;
+      z-index: 1; }
+
+  .waves-block {
+    display: block; }

@@ -5,13 +5,12 @@
             v-on:click="per_grupo($store.state.referencia_grupo.id)">
             {{ $store.state.referencia_grupo.grupo !== null ? $store.state.referencia_grupo.grupo : "" }}</h2>
         </div>
-        <div class="shadow bg-light-50 my-3 px-4 pt-4 pb-2" v-if="mi_like(preguntas.id)"
-        v-for="preguntas in $store.state.preguntas">
+        <div class="shadow bg-light-50 my-3 px-4 pt-4 pb-2"  v-for="(preguntas, key) in $store.state.preguntas" v-bind:key="key">
             <div class="row m-0">
                 <div class="col-6 p-0">
                     <span>{{ preguntas.nombre_apellido }}</span>
                 </div>
-                <div class="col-6 p-0 d-flex justify-content-end">
+                <div class="col-6 p-0 d-flex justify-content-end" v-if="$store.state.usuario.length > 0">
                     <div class="dropdown dropleft">
                         <span class="cursor-pointer" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">...</span>
@@ -33,17 +32,16 @@
             </p>
             <div>
                 <span>
-                    <i class="fa fa-heart-o h5 cursor-pointer" :id="preguntas.id" v-on:click="like(preguntas.id,preguntas.likes)"
+                    <i class="fa fa-heart-o h5 cursor-pointer" :id="'corazon_'+preguntas.id" v-on:click="like(preguntas.id,key)"
                      aria-hidden="true" like="No"></i>
                     <span class="mr-2" :id="'likes'+preguntas.id">{{preguntas.likes}}</span>
                 </span>
                 <span>
-                    <router-link class="text-dark" :to="{name:'comentarios'}">
-                    <span v-on:click="display_comentarios(preguntas)">
-                        <i class="fa fa-comment h5 cursor-pointer" aria-hidden="true"
-                        ></i>
-                        {{ preguntas.comentarios }}
-                    </span>
+                    <router-link class="text-dark" :to="'/comentarios/'+preguntas.id">
+                        <span>
+                            <i class="fa fa-comment h5 cursor-pointer" aria-hidden="true"></i>
+                            {{ preguntas.comentarios }}
+                        </span>
                     </router-link>
                 </span>
             </div>
@@ -108,6 +106,14 @@
 </template>
 <script>
 export default {
+    mounted() {
+        let interval = setInterval(()=> {
+            if(this.$store.state.preguntas.length > 0){
+                this.mi_like();
+                window.clearInterval(interval);
+            }
+        },3000);
+    },
     data(){
         return{
             titulo_editar: '',
@@ -128,96 +134,49 @@ export default {
                 return value;
             }
         },
-        async like(value,likes){
+        async like(value,key){
+            if(this.$store.state.usuario.length == 0) return location.hash = "/login";
             let token = document.querySelector('meta#token').getAttribute('content');
-            let confirma = document.getElementById(value).getAttribute('like');
-            if(confirma === "Si"){
-                let ids = document.getElementById(value);
-                const consulta = await fetch('like/'+value+'/'+0,{
+            let confirma = document.getElementById('corazon_'+value);
+            let likex = confirma.getAttribute('like');
+            if(likex == "No"){
+                this.$store.state.preguntas[key].likes +=1;
+                confirma.classList = "fa fa-heart h5 cursor-pointer text-danger";
+                confirma.setAttribute('like','Si');
+            }
+            else {
+                confirma.classList = "fa fa-heart-o h5 cursor-pointer";
+                this.$store.state.preguntas[key].likes -=1;
+                confirma.setAttribute('like','No');
+            }
+            try {
+                const consulta = await fetch('like/'+value,{
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': token
                     }
                 });
-                const respuesta = await consulta.text();
-                if(respuesta != "Error"){
-                    for(var i = 0; i < this.$store.state.preguntas.length; i++){
-                        if(this.$store.state.preguntas[i].id == value){
-                            this.$store.state.preguntas[i].likes = respuesta;
-                        }
-                    }
-                    ids.classList.remove('fa-heart');
-                    ids.classList.add('fa-heart-o');
-                    ids.classList.remove('text-danger');
-                    document.getElementById(value).setAttribute('like','No');
-                }
-                else{
-                    alerify.error("Haga click nuevamente");
-                }
-            }
-            else if(confirma === "No"){
-                let token = document.querySelector('meta#token').getAttribute('content');
-                let ids = document.getElementById(value);
-                const consulta = await fetch('like/'+value+'/'+1,{
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': token
-                    }
-                });
-                const respuesta = await consulta.text();
-                if(respuesta != "Error"){
-                    for(var i = 0; i < this.$store.state.preguntas.length; i++){
-                        if(this.$store.state.preguntas[i].id == value){
-                            this.$store.state.preguntas[i].likes = respuesta;
-                        }
-                    }
-                    ids.classList.remove('fa-heart-o');
-                    ids.classList.add('fa-heart');
-                    ids.classList.add('text-danger');
-                    document.getElementById(value).setAttribute('like','Si');
-                }
-                else{
-                    alerify.error("Haga click nuevamente");
-                }
-            }
-            else{
-                alertify.error("Error inesperado. Recargue el sitio web");
+                if(consulta.status != 200) throw(consulta);
+            } catch (error) {
+                alertify.error("Intenta de nuevo");
             }
         },
-        async mi_like(value){
-            let token = document.querySelector('meta#token').getAttribute('content');
-            if(this.$store.state.contador === 0){
-                try{
-                    const consulta = await fetch('milike/'+value,{
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': token
-                        }
-                    });
-                    const respuesta = await consulta.text();
-                    if(respuesta > 0){
-                        let ids = document.getElementById(value);
-                        ids.classList.remove('fa-heart-o');
-                        ids.classList.add('fa-heart');
-                        ids.classList.add('text-danger');
+        async mi_like(){
+            let i = null;
+            let likes = null;
+            for(i of this.$store.state.preguntas){
+                for( likes of this.$store.state.likes_generales){
+                    if(likes.id_pregunta == i.id && likes.id_usuario == this.$store.state.usuario.id){
+                        let ids = document.getElementById('corazon_'+i.id);
+                        ids.classList = "fa fa-heart h5 cursor-pointer text-danger";
                         ids.setAttribute('like','Si');
                     }
                 }
-                catch(error){}
-                this.$store.state.contador++;
             }
         },
         per_grupo(value){
             localStorage.setItem('grupo',value)
             this.$store.dispatch('preguntas_get');
-        },
-        display_comentarios(value){
-            let confirma = document.getElementById(value.id).getAttribute('like');
-            localStorage.setItem('datas',JSON.stringify(value));
-            localStorage.setItem('confirm',confirma);
-            let anterior = localStorage.getItem('grupo');
-            localStorage.setItem('atras',anterior);
-            localStorage.setItem('grupo',-10);
         },
         modal_cambiar(titulo,descripcion,id_grupo,id_pregunta){
             this.titulo_editar = titulo;
@@ -235,7 +194,7 @@ export default {
             }
         },
         async cambiar(){
-            const regular =  /^[a-zA-ZÁ-ÿ0-9]{1,254}$/,
+            const regular =  /^[a-zA-ZÁ-ÿ\s\,\.]{1,250}$/,
             regularNumber =  /^\d{1,15}$/;
             const regularDesc = /^.{1,400000000}$/;
             let token = document.querySelector('meta#token').getAttribute('content');

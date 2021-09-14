@@ -7,15 +7,13 @@
                 </div>
             </div>
        </main>
+        <crear-pregunta />
     </div>
 </template>
 <script>
 export default {
     created() {
-        let value = JSON.parse(localStorage.getItem('datas'));
-        let confirma = localStorage.getItem('confirm');
-        this.$store.state.pregunta = value;
-        this.$store.state.esLike = confirma;
+        this.$store.state.id_pregunta = this.$route.params.id;
         this.$store.dispatch('comentarios');
     },
 }

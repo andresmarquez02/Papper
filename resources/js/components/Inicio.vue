@@ -17,3 +17,16 @@
        <crear-pregunta />
     </div>
 </template>
+<script>
+export default {
+    created() {
+        this.pregg();
+    },
+    methods: {
+        pregg(){
+            this.$store.dispatch('preguntas_get');
+             this.$store.dispatch('groups');
+        },
+    },
+}
+</script>

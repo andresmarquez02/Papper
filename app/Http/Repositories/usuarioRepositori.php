@@ -5,134 +5,190 @@ use App\Http\Interfaces\usuarioInterface;
 use Auth;
 use Session;
 use DB;
+use Cache;
 
 class usuarioRepositori implements usuarioInterface
 {
-    public function create($grupo)
+    public function index($grupo)
     {
         if($grupo == 0){
             $preguntas = $this->preConsulta()->get();
-            return response()->json(["preguntas" => $preguntas, "grupo" => []]);
+            $grupo = [];
         }
         else if($grupo == -1){
             $preguntas = $this->preConsulta()
             ->orderBy('likes','desc')
             ->orderBy('comentarios','desc')
             ->get();
-            return response()->json(["preguntas" => $preguntas, "grupo" => collect(['id' => -1, 'grupo' => 'Populares'])]);
-        }
-        else if($grupo == -2){
-            $preguntas = $this->preConsulta()
-            ->where('id_usuario',Auth::user()->id)
-            ->get();
-            return response()->json(["preguntas" => $preguntas, "grupo" => []]);
+            $grupo = collect(['id' => -1, 'grupo' => 'Populares']);
         }
         else{
             $preguntas = $this->preConsulta()
             ->where('id_grupo',$grupo)
             ->get();
-            return response()->json([ "preguntas" => $preguntas, "grupo" => DB::table('grupos')->find($grupo)]);
+            $grupo = Cache::get('grupos')->where("id",$grupo);
         }
+        return response()->json([ "preguntas" => $preguntas, "grupo" => $grupo, "likes" => []]);
+    }
+    public function create($grupo)
+    {
+        if(! Cache::has('likes')){
+            $likes = DB::table('likes')->where("id_usuario",auth()->user()->id)->get();
+            Cache::add('likes', $likes, 3000);
+        }
+        else{
+            $likes = Cache::get('likes');
+        }
+        if($grupo == 0){
+            $preguntas = $this->preConsulta()->get();
+            $grupo = [];
+        }
+        else if($grupo == -1){
+            $preguntas = $this->preConsulta()
+            ->orderBy('likes','desc')
+            ->orderBy('comentarios','desc')
+            ->get();
+            $grupo = collect(['id' => -1, 'grupo' => 'Populares']);
+        }
+        else if($grupo == -2){
+            if(! Cache::has('mis_preguntas')){
+                Cache::forever('mis_preguntas', $this->preConsulta()
+                ->where('id_usuario',Auth::user()->id)
+                ->get());
+            }
+            $preguntas = Cache::get('mis_preguntas');
+            $grupo = [];
+        }
+        else{
+            $preguntas = $this->preConsulta()
+            ->where('id_grupo',$grupo)
+            ->get();
+            $grupo = Cache::get('grupos')->where("id",$grupo);
+        }
+        return response()->json([ "preguntas" => $preguntas, "grupo" => $grupo, "likes" => $likes]);
     }
     private function preConsulta(){
         return DB::table('preguntas')
         ->join('users','users.id','=','preguntas.id_usuario')
         ->select('preguntas.*','nombre_apellido');
     }
-    public function likes($datos,$like){
+    public function comentarios_init($id){
+        $datos = DB::table('comentarios')->where('id_pregunta',$id)
+        ->leftjoin('users','users.id','=','comentarios.id_usuario')
+        ->select('comentarios.id','comentario','id_usuario','id_admin','id_pregunta','likes',
+        'nombre_apellido')->get();
+        $pregunta = DB::table('preguntas')
+        ->leftjoin('users','users.id','=','preguntas.id_usuario')
+        ->select('preguntas.*','nombre_apellido')->where("preguntas.id",$id)->first();
+
+        return json_encode(["pregunta"=> $pregunta,"esLike" => [],"comentarios" => $datos, "likes_comentarios" => []],200);
+    }
+    public function comentarios($id){
+        $datos = DB::table('comentarios')->where('id_pregunta',$id)
+        ->leftjoin('users','users.id','=','comentarios.id_usuario')
+        ->select('comentarios.id','comentario','id_usuario','id_admin','id_pregunta','likes',
+        'nombre_apellido')->get();
+        $pregunta = DB::table('preguntas')
+        ->leftjoin('users','users.id','=','preguntas.id_usuario')
+        ->select('preguntas.*','nombre_apellido')->where("preguntas.id",$id)->first();
+        $esLike = DB::table('likes')->where("id_pregunta",$id)->where("id_usuario",auth()->user()->id)->count();
+
+        $likes_comentarios = DB::table('like_comentario')->where('id_pregunta',$id)->where('id_user',Auth::user()->id)
+        ->get();
+
+        return json_encode(["pregunta"=> $pregunta,"esLike" => $esLike,"comentarios" => $datos, "likes_comentarios" => $likes_comentarios],200);
+    }
+    public function likes($id_pregunta){
         DB::beginTransaction();
         try {
-            if($like == 0){
-                DB::table('likes')->where('id_pregunta', $datos)->where('id_usuario', Auth::user()->id)->delete();
-                DB::table('preguntas')->where('id', $datos)->decrement('likes', 1);
-                DB::table('notificaciones')->where('id_pregunta',$datos)
-                ->where('id_user_autor',Auth::user()->id)->delete();
-                $cantidad_likes = DB::table('preguntas')->where('id',$datos)->value('likes');
+            if(! Cache::has('likes')){
+                $likes = DB::table('likes')->where("id_usuario",auth()->user()->id)->get();
+                Cache::add('likes', $likes, 3000);
             }
-            else if($like == 1){
-
-                $id_admin = DB::table('preguntas')->where('id',$datos)->value('id_usuario');
-                DB::table('preguntas')->where('id', $datos)->increment('likes', 1);
+            else{
+                $likes = Cache::get('likes');
+            }
+            if($likes->where('id_pregunta', $id_pregunta)->count() > 0){
+                DB::table('likes')->where('id_pregunta', $id_pregunta)->where('id_usuario', Auth::user()->id)->delete();
+                DB::table('preguntas')->where('id', $id_pregunta)->decrement('likes', 1);
+                DB::table('notificaciones')->where('id_pregunta',$id_pregunta)
+                ->where('id_user_autor',Auth::user()->id)->delete();
+                $cantidad_likes = DB::table('preguntas')->where('id',$id_pregunta)->value('likes');
+            }
+            else{
+                $id_admin = DB::table('preguntas')->where('id',$id_pregunta)->value('id_usuario');
+                DB::table('preguntas')->where('id', $id_pregunta)->increment('likes', 1);
                 DB::table('likes')->insert([
                     'like' => 'SI',
                     'id_usuario' => Auth::user()->id,
                     'id_admin' => $id_admin,
-                    'id_pregunta' => $datos,
+                    'id_pregunta' => $id_pregunta,
                 ]);
                 DB::table('notificaciones')->insert([
                     'id_user_autor' => Auth::user()->id,
                     'descripcion' => Auth::user()->nombre_apellido.' Le ha dado like a tu publicación',
                     'id_admin' => $id_admin,
-                    'id_pregunta' => $datos,
+                    'id_pregunta' => $id_pregunta,
                     'vista' => 'No',
                 ]);
-                $cantidad_likes = DB::table('preguntas')->where('id',$datos)->value('likes');
+                $cantidad_likes = DB::table('preguntas')->where('id',$id_pregunta)->value('likes');
             }
+            Cache::pull('likes');
             DB::commit();
             return response()->json($cantidad_likes);
         } catch (\Throwable $th) {
             DB::rollback();
-            return response()->json(["Error recargue el sitio"]);
+            return response()->json(["Error recargue el sitio"],500);
         }
 
     }
-    public function likes_comentarios($datos,$like){
-        if($like == 0){
+    public function likes_comentarios($datos){
+        $likes_comentarios = DB::table('like_comentario')->where('id_comentario',$datos)->where('id_user',Auth::user()->id)
+        ->count();
+        if($likes_comentarios > 0){
             DB::beginTransaction();
             try {
-                $cantidad_likes = DB::table('comentarios')->where('id',$datos)->value('likes');
                 $id_pregunta = DB::table('comentarios')->where('id',$datos)->value('id_pregunta');
-                $cantidad_likes = $cantidad_likes-1;
                 DB::table('like_comentario')->where('id_comentario',$datos)
                 ->where('id_user',Auth::user()->id)->delete();
-                DB::table('comentarios')->where('id',$datos)->update([
-                    'likes' => $cantidad_likes
-                ]);
-                DB::table('notificaciones')->where('id_pregunta',$id_pregunta)
-                ->where('id_user_autor',Auth::user()->id)->delete();
+                DB::table('comentarios')->where('id',$datos)->decrement('likes', 1);
                 DB::commit();
-                return json_encode($cantidad_likes);
+                return json_encode(1,200);
             } catch (\Throwable $th) {
                 //throw $th;
                 DB::rollback();
                 return json_encode("Error");
             }
         }
-        if($like == 1){
+        else {
             DB::beginTransaction();
             try {
-                $cantidad_likes = DB::table('comentarios')->where('id',$datos)->value('likes');
-                $id_admin = DB::table('comentarios')->where('id',$datos)->value('id_admin');
-                $id_usuario = DB::table('comentarios')->where('id',$datos)->value('id_usuario');
-                $id_pregunta = DB::table('comentarios')->where('id',$datos)->value('id_pregunta');
-                $cantidad_likes = $cantidad_likes+1;
-                DB::table('comentarios')->where('id',$datos)->update([
-                    'likes' => $cantidad_likes
-                ]);
+                $comentario = DB::table('comentarios')->where('id',$datos)->first();
+                DB::table('comentarios')->where('id',$datos)->increment('likes', 1);
                 DB::table('like_comentario')->insert([
                     'like' => 'SI',
-                    'id_pregunta' => $id_pregunta,
-                    'id_admin' => $id_admin,
+                    'id_pregunta' => $comentario->id_pregunta,
+                    'id_admin' => $comentario->id_admin,
                     'id_comentario' => $datos,
-                    'id_user_admin_comentario' => $id_usuario,
+                    'id_user_admin_comentario' => $comentario->id_usuario,
                     'id_user' => Auth::user()->id,
                 ]);
                 DB::table('notificaciones')->insert([
                     'id_user_autor' => Auth::user()->id,
                     'descripcion' => Auth::user()->nombre_apellido.' Le ha dado like a tu tu comentario en una publicación',
-                    'id_admin' => $id_admin,
+                    'id_admin' => $comentario->id_admin,
                     'id_pregunta' => $datos,
                     'vista' => 'No',
                 ]);
                 DB::table('notificaciones')->insert([
                     'id_user_autor' => Auth::user()->id,
                     'descripcion' => Auth::user()->nombre_apellido.' Ha interactuado con un like en tu publicación',
-                    'id_admin' => $id_admin,
-                    'id_pregunta' => $id_pregunta,
+                    'id_admin' => $comentario->id_admin,
+                    'id_pregunta' => $comentario->id_pregunta,
                     'vista' => 'No',
                 ]);
                 DB::commit();
-                return json_encode($cantidad_likes);
+                return json_encode(1);
             } catch (\Throwable $th) {
                 //throw $th;
                 DB::rollback();
@@ -151,6 +207,7 @@ class usuarioRepositori implements usuarioInterface
             'comentarios' => 0,
         ]);
         $publicado = "Publicado";
+        Cache::pull('mis_preguntas');
         return $publicado;
     }
     public function editar_pregunta($request,$id){
@@ -164,6 +221,7 @@ class usuarioRepositori implements usuarioInterface
                 'updated_at'=>$fecha
             ]);
             DB::commit();
+            Cache::pull('mis_preguntas');
             return "Exito";
         } catch (\Throwable $th) {
             //throw $th;
@@ -174,9 +232,7 @@ class usuarioRepositori implements usuarioInterface
         DB::beginTransaction();
         try {
             $id_admin = DB::table('preguntas')->where('id',$id)->value('id_usuario');
-            $cantidad_comentarios = DB::table('preguntas')->where('id',$id)->value('comentarios');
-            $cantidad_comentarios = $cantidad_comentarios+1;
-            DB::table('preguntas')->where('id',$id)->update(['comentarios' => $cantidad_comentarios]);
+            DB::table('preguntas')->where('id',$id)->increment('comentarios',1);
             DB::table('comentarios')->insert([
                 'comentario' => $request->comentario,
                 'id_usuario' => Auth::user()->id,
@@ -227,9 +283,7 @@ class usuarioRepositori implements usuarioInterface
         try {
             $id_pregunta = DB::table('comentarios')->where('id',$id)->value('id_pregunta');
             $id_admin = DB::table('comentarios')->where('id',$id)->value('id_admin');
-            $comentarios = DB::table('preguntas')->where('id',$id_pregunta)->value('comentarios');
-            $comentarios = $comentarios-1;
-            DB::table('preguntas')->where('id',$id_pregunta)->update(["comentarios" => $comentarios]);
+            DB::table('preguntas')->where('id',$id_pregunta)->update("comentarios",1);
             DB::table('comentarios')->where('id',$id)->where('id_usuario',Auth::user()->id)
             ->delete();
             DB::table('notificaciones')->insert([
@@ -251,55 +305,45 @@ class usuarioRepositori implements usuarioInterface
             $preguntas = DB::table('preguntas')
             ->join('users','users.id','=','preguntas.id_usuario')
             ->where('titulo','like',"%".$palabra."%")
+            ->Orwhere('descripcion','like',"%".$palabra."%")
             ->select('preguntas.id','preguntas.id_usuario','titulo','descripcion','likes',
             'comentarios','id_grupo','nombre_apellido')
             ->get();
-            $group = [];
-            $datos['preguntas'] = $preguntas;
-            $datos['grupo'] = $group;
-            return json_encode($datos);
+            return json_encode(["grupo" => [], "preguntas" => $preguntas],200);
         }
         else if($grupo == -1){
             $preguntas = DB::table('preguntas')
             ->join('users','users.id','=','preguntas.id_usuario')
             ->where('titulo','like',"%".$palabra."%")
+            ->Orwhere('descripcion','like',"%".$palabra."%")
             ->select('preguntas.id','preguntas.id_usuario','titulo','descripcion','likes',
             'comentarios','id_grupo','nombre_apellido')
             ->orderBy('likes','desc')
             ->orderBy('comentarios','desc')
             ->get();
-            $group = DB::table('grupos')->where('id',1)->get();
-            $group[0]->id = -1;
-            $group[0]->grupo = 'Populares';
-            $datos['preguntas'] = $preguntas;
-            $datos['grupo'] = $group;
-            return json_encode($datos);
+            return json_encode(["grupo" => collect(["id"=> -1, "grupo" => "Populares"]), "preguntas" => $preguntas],200);
         }
         else if($grupo == -2){
             $preguntas = DB::table('preguntas')
             ->join('users','users.id','=','preguntas.id_usuario')
             ->where('id_usuario',Auth::user()->id)
             ->where('titulo','like',"%".$palabra."%")
+            ->Orwhere('descripcion','like',"%".$palabra."%")
             ->select('preguntas.id','preguntas.id_usuario','titulo','descripcion','likes',
             'comentarios','id_grupo','nombre_apellido')
             ->get();
-            $group = [];
-            $datos['preguntas'] = $preguntas;
-            $datos['grupo'] = $group;
-            return json_encode($datos);
+            return json_encode(["grupo" => [], "preguntas" => $preguntas],200);
         }
         else{
             $preguntas = DB::table('preguntas')
             ->join('users','users.id','=','preguntas.id_usuario')
             ->where('id_grupo',$grupo)
             ->where('titulo','like',"%".$palabra."%")
+            ->Orwhere('descripcion','like',"%".$palabra."%")
             ->select('preguntas.id','preguntas.id_usuario','titulo','descripcion','likes',
             'comentarios','id_grupo','nombre_apellido')
             ->get();
-            $group = DB::table('grupos')->where('id',$grupo)->get();
-            $datos['preguntas'] = $preguntas;
-            $datos['grupo'] = $group;
-            return json_encode($datos);
+            return json_encode(["grupo" => Cache::get("grupos")->where('id',$grupo), "preguntas" => $preguntas],200);
         }
     }
 }

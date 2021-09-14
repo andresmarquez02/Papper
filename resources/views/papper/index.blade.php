@@ -47,5 +47,6 @@
     </script>
     <script src="{{asset('alertify/lib/alertify.min.js')}}"></script>
     <script src="{{asset('js/app.js')}}"></script>
+    <script src="{{asset('js/waves.js')}}"></script>
 </body>
 @endsection

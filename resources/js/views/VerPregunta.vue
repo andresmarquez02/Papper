@@ -1,9 +1,14 @@
 <template>
     <div class="pt-3 pb-3 px-md-5">
-        <div>
-            <a href="#/inicio" v-on:click="atras()" class="btn btn-outline-light rounded-circle">
+        <div v-if="$store.state.usuario.lenght > 0">
+            <router-link class="btn btn-outline-light rounded-circle" to="/inicio">
                 <i class="fas fa-arrow-left"></i>
-            </a>
+            </router-link>
+        </div>
+        <div v-else>
+            <router-link class="btn btn-outline-light rounded-circle" to="/">
+                <i class="fas fa-arrow-left"></i>
+            </router-link>
         </div>
         <div class="shadow bg-light my-3 px-4 pt-4 pb-2">
             <span>{{ $store.state.pregunta.nombre_apellido }}</span>
@@ -11,10 +16,9 @@
             <p> {{$store.state.pregunta.descripcion}}
             </p>
             <div>
-                <span v-if="mi_like($store.state.pregunta.id)">
-                    <i class="fa fa-heart-o h5 cursor-pointer" :id="'comentarios'+$store.state.pregunta.id"
-                    v-on:click="like($store.state.pregunta.id,$store.state.pregunta.likes)"
-                     aria-hidden="true" like="No"></i>
+                <span>
+                    <i class="fa h5 cursor-pointer" :class="$store.state.esLike > 0 ? 'fa-heart text-danger' : 'fa-heart-o'" :id="'corazon_'+$store.state.pregunta.id" v-on:click="like($store.state.pregunta.id)"
+                     aria-hidden="true" :like="$store.state.esLike > 0 ? 'Si' : 'No'"></i>
                     <span class="mr-2" :id="'likes'+$store.state.pregunta.id">{{$store.state.pregunta.likes}}</span>
                 </span>
             </div>
@@ -25,7 +29,7 @@
                 <div class="col-6 p-0">
                     <span>{{ comentario.nombre_apellido }}</span>
                 </div>
-                <div class="col-6 p-0 d-flex justify-content-end">
+                <div class="col-6 p-0 d-flex justify-content-end" v-if="$store.state.usuario.lenght > 0">
                     <div class="dropdown dropleft">
                         <span class="cursor-pointer" id="triggerIdss" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">...</span>
@@ -43,9 +47,9 @@
             <p class="comment"> {{comentario.comentario}}
             </p>
             <div>
-                <span v-if="mi_like_comentario(comentario.id)">
+                <span>
                     <i class="fa fa-heart-o h5 cursor-pointer" :id="'comentarios_c'+comentario.id"
-                    v-on:click="like_comentario(comentario.id,comentario.likes)"
+                    v-on:click="like_comentario(comentario.id)"
                      aria-hidden="true" like="No"></i>
                     <span class="mr-2" :id="'likes_c'+comentario.id">{{comentario.likes}}</span>
                 </span>
@@ -53,9 +57,9 @@
         </div>
         <div class="my-3 px-4 pt-4 pb-2"
         v-if="$store.state.commentarios == ''">
-            <h2 class="text-center">Sin comentarios...</h2>
+            <h2 class="text-center text-white font-weight-bold">Sin comentarios...</h2>
         </div>
-        <div class="my-3 px-lg-4 pt-4 pb-2">
+        <div class="my-3 px-lg-4 pt-4 pb-2" v-if="$store.state.usuario.lenght > 0">
             <div class="col-12 btn-group p-0 btn-group-toggle">
                 <input type="text" class="form-control rounded-0 rounded-left col-md-11 col-sm-10 col-10" placeholder="comentario..."
                 v-model="$store.state.comentario" v-on:keyup.enter="comentar()" maxlength="255" minlength="1">
@@ -89,6 +93,14 @@
 </template>
 <script>
 export default {
+    mounted() {
+        let intervalo = setInterval(()=> {
+            if(this.$store.state.commentarios.length > 0){
+                this.mi_like();
+                window.clearInterval(intervalo);
+            }
+        },3000);
+    },
     data(){
         return{
             comentario_editar: '',
@@ -98,146 +110,85 @@ export default {
         }
     },
     methods: {
-        async like(value,likes){
-            let confirma = document.getElementById(value).getAttribute('like');
-            if(confirma === "Si"){
-                let ids = document.getElementById('comentarios'+value);
-                const consulta = await fetch('like/'+value+'/'+0);
-                const respuesta = await consulta.text();
-                if(respuesta != "Error"){
-                    for(var i = 0; i < this.$store.state.preguntas.length; i++){
-                        if(this.$store.state.preguntas[i].id == value){
-                            this.$store.state.preguntas[i].likes = respuesta;
-                        }
-                    }
-                    ids.classList.remove('fa-heart');
-                    ids.classList.add('fa-heart-o');
-                    ids.classList.remove('text-danger');
-                    document.getElementById(value).setAttribute('like','No');
-                }
-                else{
-                    alerify.error("Haga click nuevamente");
-                }
-            }
-            else if(confirma === "No"){
-                let ids = document.getElementById('comentarios'+value);
-                const consulta = await fetch('like/'+value+'/'+1);
-                const respuesta = await consulta.text();
-                if(respuesta != "Error"){
-                    for(var i = 0; i < this.$store.state.preguntas.length; i++){
-                        if(this.$store.state.preguntas[i].id == value){
-                            this.$store.state.preguntas[i].likes = respuesta;
-                        }
-                    }
-                    ids.classList.remove('fa-heart-o');
-                    ids.classList.add('fa-heart');
-                    ids.classList.add('text-danger');
-                    document.getElementById(value).setAttribute('like','Si');
-                }
-                else{
-                    alerify.error("Haga click nuevamente");
-                }
-            }
-            else{
-                alertify.error("Error inesperado. Recargue el sitio web");
-            }
-        },
-        async like_comentario(value,likes){
-            let confirma = document.getElementById('comentarios_c'+value).getAttribute('like');
-            if(confirma === "Si"){
-                let ids = document.getElementById('comentarios_c'+value);
-                const consulta = await fetch('like/comentarios/'+value+'/'+0);
-                const respuesta = await consulta.text();
-                if(respuesta != "Error"){
-                    for(var i = 0; i < this.$store.state.commentarios.length; i++){
-                        if(this.$store.state.commentarios[i].id == value){
-                            this.$store.state.commentarios[i].likes = respuesta;
-                        }
-                    }
-                    ids.classList.remove('fa-heart');
-                    ids.classList.add('fa-heart-o');
-                    ids.classList.remove('text-danger');
-                    document.getElementById('comentarios_c'+value).setAttribute('like','No');
-                }
-                else{
-                    alerify.error("Haga click nuevamente");
-                }
+        async like(value){
+            if(this.$store.state.usuario.length == 0) return location.hash = "/login";
 
-            }
-            else if(confirma === "No"){
-                let token = document.querySelector('meta#token').getAttribute('content');
-                let ids = document.getElementById('comentarios_c'+value);
-                const consulta = await fetch('like/comentarios/'+value+'/'+1,{
-                     method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': token
-                    }
-                });
-                const respuesta = await consulta.text();
-                if(respuesta != "Error"){
-                    for(var i = 0; i < this.$store.state.commentarios.length; i++){
-                        if(this.$store.state.commentarios[i].id == value){
-                            this.$store.state.commentarios[i].likes = respuesta;
-                        }
-                    }
-                    ids.classList.remove('fa-heart-o');
-                    ids.classList.add('fa-heart');
-                    ids.classList.add('text-danger');
-                    document.getElementById('comentarios_c'+value).setAttribute('like','Si');
-                }
-                else{
-                    alerify.error("Haga click nuevamente");
-                }
-            }
-            else{
-                alertify.error("Error inesperado. Recargue el sitio web");
-            }
-        },
-        async mi_like(value){
             let token = document.querySelector('meta#token').getAttribute('content');
-            try{
-                const consulta = await fetch('milike/'+value,{
-                     method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': token
-                    }
-                });
-                const respuesta = await consulta.text();
-                if(respuesta != 0){
-                    let ids = document.getElementById("comentarios"+value);
-                    ids.classList.remove('fa-heart-o');
-                    ids.classList.add('fa-heart');
-                    ids.classList.add('text-danger');
-                    ids.setAttribute('like','Si');
-                }
+            let confirma = document.getElementById('corazon_'+value);
+            let likex = confirma.getAttribute('like');
+            if(likex == "No"){
+                this.$store.state.pregunta.likes +=1;
+                confirma.classList = "fa fa-heart h5 cursor-pointer text-danger";
+                confirma.setAttribute('like','Si');
             }
-            catch(error){}
-        },
-        async mi_like_comentario(value){
-            let token = document.querySelector('meta#token').getAttribute('content');
-            try{
-                const consulta = await fetch('milike/comentario/'+value,{
+            else {
+                confirma.classList = "fa fa-heart-o h5 cursor-pointer";
+                this.$store.state.pregunta.likes -=1;
+                confirma.setAttribute('like','No');
+            }
+            try {
+                const consulta = await fetch('like/'+value,{
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': token
                     }
                 });
-                const respuesta = await consulta.text();
-                if(respuesta != 0){
-                    let ids = document.getElementById("comentarios_c"+value);
-                    ids.classList.remove('fa-heart-o');
-                    ids.classList.add('fa-heart');
-                    ids.classList.add('text-danger');
-                    ids.setAttribute('like','Si');
+                if(consulta.status != 200) throw(consulta);
+            } catch (error) {
+                alertify.error("Intenta de nuevo");
+            }
+        },
+        async mi_like(){
+            let i = null;
+            let likes = null;
+            for(i of this.$store.state.commentarios){
+                for( likes of this.$store.state.likes_comentarios){
+                    if(likes.id_user == this.$store.state.usuario.id && likes.id_comentario == i.id){
+                        let ids = document.getElementById('comentarios_c'+i.id);
+                        ids.classList = "fa fa-heart h5 cursor-pointer text-danger";
+                        ids.setAttribute('like','Si');
+                    }
                 }
             }
-            catch(error){}
         },
-        atras(value){
-            this.$store.state.normal = "";
-            this.$store.state.no_normal = "d-none";
+        async like_comentario(value){
+            if(this.$store.state.usuario.length == 0) return location.hash = "/login";
+
+            let token = document.querySelector('meta#token').getAttribute('content');
+            let ids = document.getElementById('comentarios_c'+value);
+            let confirma = document.getElementById('comentarios_c'+value).getAttribute('like');
+            if(confirma === "Si"){
+                for(var i = 0; i < this.$store.state.commentarios.length; i++){
+                    if(this.$store.state.commentarios[i].id == value){
+                        this.$store.state.commentarios[i].likes -= 1;
+                    }
+                }
+                ids.classList.remove('fa-heart');
+                ids.classList.add('fa-heart-o');
+                ids.classList.remove('text-danger');
+                document.getElementById('comentarios_c'+value).setAttribute('like','No');
+            }
+            else {
+                for(var i = 0; i < this.$store.state.commentarios.length; i++){
+                    if(this.$store.state.commentarios[i].id == value){
+                        this.$store.state.commentarios[i].likes += 1;
+                    }
+                }
+                ids.classList.remove('fa-heart-o');
+                ids.classList.add('fa-heart');
+                ids.classList.add('text-danger');
+                document.getElementById('comentarios_c'+value).setAttribute('like','Si');
+            }
+            await fetch('like/comentarios/'+value,{
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': token
+                }
+            });
         },
         comentar(){
+
+            if(this.$store.state.usuario.length == 0) return location.hash = "/login";
             const regular =  /^.{1,400000000}$/ ;
             let pre = document.getElementById('carga')
             if(regular.test(this.$store.state.comentario)){
@@ -294,6 +245,7 @@ export default {
             pre.classList.remove('d-none');
             pre.classList.add('d-flex');
             let token = document.querySelector('meta#token').getAttribute('content');
+            alertify.success("Procesando...");
             try{
                 const consulta = await fetch('eliminar_comentario/'+this.id_comentario,{
                     method: 'POST',
@@ -302,8 +254,7 @@ export default {
                     }
                 });
                 const resultado = await consulta.text();
-                alertify.success("Procesando...");
-                if(resultado == "Exito"){
+                if(consulta.status == 200){
                     for(var i = 0; i < this.$store.state.commentarios.length; i++){
                         if(this.$store.state.commentarios[i].id == this.id_comentario){
                             this.$store.state.commentarios.splice(i,1);
@@ -314,22 +265,19 @@ export default {
                     alertify.success("Comentario eliminado con exito.");
                 }
                 else{
-                    pre.classList.remove('d-flex');
-                    pre.classList.add('d-none');
-                    alertify.error("Error. Intente de nuevo.");
+                    throw(consulta);
                 }
             }
-            catch(error){}
+            catch(error){
+                pre.classList.remove('d-flex');
+                pre.classList.add('d-none');
+                alertify.error("Error. Intente de nuevo.");
+            }
         },
         denunciar(){
             setTimeout(()=>{
                 alertify.success("Comentario denunciado");
-            },2000);
-        },
-        atras(){
-            let anterior = localStorage.getItem('atras');
-            localStorage.setItem('grupo',anterior);
-            this.$store.dispatch('preguntas_get');
+            },1200);
         }
     },
 }

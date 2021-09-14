@@ -6,10 +6,6 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        personas:[],
-        cargos:[],
-        paises:[],
-        regiones:[],
         preguntas:[],
         usuario:[],
         grupos: [],
@@ -17,6 +13,7 @@ export default new Vuex.Store({
         referencia_grupo: [],
         notificaciones: [],
         commentarios: [],
+        likes_comentarios: [],
         nombre_filtrar: localStorage.getItem('grupo'),
         nombre: '',
         id: '',
@@ -28,33 +25,9 @@ export default new Vuex.Store({
         esLike:"",
         comentario: '',
         contador: 0,
-        act_user: 'opopopop',
-        enCarrito: '',
+        id_pregunta: ''
     },
     mutations:{
-        traerDatos(state,datos){
-            let orden = localStorage.getItem('orden');
-            let orden_final = orden ? orden.split(',') : [];
-            let pasar = [];
-            if(orden_final != ""){
-                for(var i = 0;i < orden_final.length;i++){
-                    for(var j = 0;j < datos.length;j++){
-                        if(datos[j].id == orden_final[i]){
-                            pasar.push(datos[j]);
-                        }
-                    }
-                }
-                state.personas = pasar;
-            }
-            else{
-                state.personas = datos
-            }
-        },
-        datos(state,datos){
-            state.cargos = datos.cargos
-            state.paises = datos.paises
-            // console.log(datos);
-        },
         get_preguntas(state,datos){
             state.contador = 0;
             state.preguntas = datos.preguntas
@@ -67,7 +40,7 @@ export default new Vuex.Store({
             let pre = document.getElementById('carga');
             pre.classList.remove('d-flex');
             pre.classList.add('d-none');
-            // state.likes_generales = datos.likes
+            state.likes_generales = datos.likes
             // console.log(datos);
         },
         get_grupos(state,datos){
@@ -82,8 +55,11 @@ export default new Vuex.Store({
             state.notificaciones = datos;
         },
         get_comentarios(state,datos){
-            state.commentarios = datos;
+            state.commentarios = datos.comentarios;
+            state.pregunta = datos.pregunta;
+            state.esLike = datos.esLike;
             state.comentario = "";
+            state.likes_comentarios = datos.likes_comentarios;
             let pre = document.getElementById('carga')
             pre.classList.remove('d-flex');
             pre.classList.add('d-none');
@@ -109,7 +85,7 @@ export default new Vuex.Store({
             let pre = document.getElementById('carga')
             pre.classList.remove('d-none');
             pre.classList.add('d-flex');
-            state.nombre_filtrar = localStorage.getItem('grupo');
+            state.nombre_filtrar = localStorage.getItem('grupo') || 0;
             try {
                 const consulta = await fetch('preguntas/'+state.nombre_filtrar,{
                     method: 'POST',
@@ -197,7 +173,7 @@ export default new Vuex.Store({
             pre.classList.add('d-flex');
             let token = document.querySelector('meta#token').getAttribute('content');
             try{
-                const consulta = await fetch('comentarios/'+state.pregunta.id,{
+                const consulta = await fetch('comentarios/'+state.id_pregunta,{
                     method: 'POST',
                     headers:{
                         'X-CSRF-TOKEN': token
@@ -206,7 +182,7 @@ export default new Vuex.Store({
                 const respuesta = await consulta.json();
                 commit('get_comentarios',respuesta);
             }catch(error){
-                const consulta = await fetch('comentarios/'+state.pregunta.id,{
+                const consulta = await fetch('comentarios/'+state.id_pregunta,{
                     method: 'POST',
                     headers:{
                         'X-CSRF-TOKEN': token

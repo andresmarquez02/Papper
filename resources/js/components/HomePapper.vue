@@ -37,19 +37,19 @@
                                     aria-hidden="true"></i>
                                     </span>
                                 </p>
-                                <span class="dropdown-item" v-for="notificacion in $store.state.notificaciones" :key="notificacion.id">
+                                <router-link class="dropdown-item" v-for="notificacion in $store.state.notificaciones" :key="notificacion.id"
+                                :to="'/comentarios/'+notificacion.id_pregunta">
                                     {{ notificacion.descripcion }}
-                                </span>
+                                </router-link>
                                 <span class="dropdown-item" v-if="$store.state.notificaciones == ''">
                                 No tienes notificaciones</span>
                             </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link h5" href="./logout">
-                                <i class="fa fa-sign-out" aria-hidden="true"></i>
-                                Salir
-                                <span class="sr-only">Salir</span>
-                            </a>
+                            <span class="nav-link text-white-50" role="button" v-on:click="logout()" data-toggle="tooltip" data-placement="top"
+                            title="Salir">
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>
+                            <span class="sr-only">Salir</span>Salir</span>
                         </li>
                     </ul>
                 </div>
@@ -72,33 +72,33 @@
                             <i class="fa fa-user-circle" aria-hidden="true"></i>
                             <span class="sr-only">Mi perfil</span></router-link>
                         </li>
-                        <li class="nav-item dropdown mr-2" data-toggle="tooltip" data-placement="top"
-                            title="Notificaciones">
-                            <span class="nav-link text-white-50" type="button" id="triggerIds" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                                <i class="fa fa-bell" aria-hidden="true"></i>
+                        <li class="nav-item dropdown text-white-50">
+                            <span class="nav-link h5" type="button" id="triggerIds" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false" v-on:click.prevent="notificaciones_generales()">
+                                <i class="fa fa-bell text-white-50" aria-hidden="true"></i>
                                 <span class="sr-only">Notificaciones</span>
                             </span>
-                            <div class="dropdown-menu w-100" style="min-width:15rem;max-height: 90vh;
+                            <div class="dropdown-menu dropdown-menu-2 w-100" style="min-width:15rem;max-height: 90vh;
                             overflow-y: auto;overflow-x:hidden;" aria-labelledby="triggerIds">
                                 <p class="px-3 d-flex justify-content-end">
-                                    <span class="bg-dark text-white rounded-circle d-flex justify-content-center align-items-center" style="height:2rem;width:2rem" role="button">
+                                    <span class="border border-dark rounded-circle d-flex justify-content-center align-items-center" style="height:2rem;width:2rem" role="button">
                                         <i class="fa fa-retweet" v-on:click="notificaciones_recall()"
                                     aria-hidden="true"></i>
                                     </span>
                                 </p>
-                                <span class="dropdown-item" v-for="notificacion in $store.state.notificaciones" :key="notificacion.id">
+                                <router-link class="dropdown-item" v-for="notificacion in $store.state.notificaciones" :key="notificacion.id"
+                                :to="'/comentarios/'+notificacion.id_pregunta">
                                     {{ notificacion.descripcion }}
-                                </span>
+                                </router-link>
                                 <span class="dropdown-item" v-if="$store.state.notificaciones == ''">
                                 No tienes notificaciones</span>
                             </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white-50" href="./logout" data-toggle="tooltip" data-placement="top"
+                            <span class="nav-link text-white-50" v-on:click="logout()" data-toggle="tooltip" data-placement="top"
                             title="Salir">
                             <i class="fa fa-sign-out" aria-hidden="true"></i>
-                            <span class="sr-only">Salir</span></a>
+                            <span class="sr-only">Salir</span></span>
                         </li>
                     </ul>
                 </div>
@@ -110,7 +110,6 @@
 export default {
     created() {
         this.pregg();
-        if(location.hash !== "#/comentarios" && location.hash !== "#/perfil") location.hash ="/inicio";
     },
     mounted() {
         let top = document.getElementById('nav_bar');
@@ -128,7 +127,9 @@ export default {
         let token = document.querySelector('meta#token').getAttribute('content');
         this.$store.state.token = token;
         let container = document.querySelector(".dropdown-menu");
+        let container2 = document.querySelector(".dropdown-menu-2");
         container.addEventListener("click", (event) => event.stopPropagation());
+        container2.addEventListener("click", (event) => event.stopPropagation());
     },
     methods: {
         pregg(){
@@ -145,6 +146,10 @@ export default {
         },
         notificaciones_recall(){
             this.$store.dispatch('notificaciones_ver_recall');
+        },
+        logout(){
+            localStorage.setItem("logueado","No");
+            location.href = "./logout";
         }
     },
 }

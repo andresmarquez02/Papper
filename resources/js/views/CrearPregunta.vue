@@ -1,5 +1,5 @@
 <template>
-    <div>
+   <div>
         <div class="modal" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -18,7 +18,7 @@
                             <label for="">Grupo</label>
                             <select class="form-control" v-model="grupo">
                                 <option selected>Selecciona</option>
-                                <option v-for="grupo in $store.state.grupos" :value="grupo.id">{{ grupo.grupo }}</option>
+                                <option v-for="grupo in $store.state.grupos" :value="grupo.id" v-bind:key="grupo.id">{{ grupo.grupo }}</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -45,7 +45,7 @@ export default {
     },
     methods: {
         async publicar(){
-            const regular =  /^[a-zA-ZÁ-ÿ0-9]{1,254}$/,
+            const regular =  /^[a-zA-ZÁ-ÿ\s\,\.]{1,250}$/,
             regularNumber =  /^\d{1,15}$/;
             const regularDesc = /^.{1,400000000}$/;
             let token = document.querySelector('meta#token').getAttribute('content');

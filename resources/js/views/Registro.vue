@@ -3,50 +3,30 @@
         <div class="d-flex justify-content-center align-items-center" style="min-height:calc(100vh - 4rem);">
             <div class="bg-light-50 shadow-double w-50-75 rounded-xl">
                 <div class="form-group mt-3">
-                    <div class="d-flex justify-content-center">
-                        <h1 class="font-weight-bold">Registro</h1>
-                    </div>
+                    <h2 class="font-weight-bold text-dark text-center">Registro</h2>
                 </div>
                 <form v-on:keyup.enter="ingress()">
-                    <div class="form-group">
+                    <div class="form-group my-3">
                         <div class="d-flex justify-content-center">
-                            <label for="" class="text-dark">Usuario</label>
-                        </div>
-                        <div class="d-flex justify-content-center">
-                        <input type="text" maxlength="254" minlenght="5" class="form-control bg-light-50 rounded-pill w-75-90" v-model="nombreApellido">
-                        </div>
-                        <div class="d-flex justify-content-center">
-                            <small id="helpId" class="text-white text-center w-100">Debe tener minimo 5 caracteres</small>
+                            <input type="text" maxlength="254" minlenght="5" class="form-control bg-light-50 rounded-pill w-75-90" placeholder="Usuario" v-model="nombreApellido">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group my-3">
                         <div class="d-flex justify-content-center">
-                            <label for="" class="text-dark">Correo</label>
-                        </div>
-                        <div class="d-flex justify-content-center">
-                            <input type="email" maxlength="254" minlenght="5" class="form-control bg-light-50 rounded-pill w-75-90" v-model="correo">
-                        </div>
-                        <div class="d-flex justify-content-center">
-                            <small id="helpId" class="text-white">Ej. prueba34@gmail.com</small>
+                            <input type="email" maxlength="254" minlenght="5" class="form-control bg-light-50 rounded-pill w-75-90" placeholder="Correo" v-model="correo">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="d-flex justify-content-center">
-                            <label for="" class="text-dark ">Contraseña</label>
-                        </div>
+                    <div class="form-group my-3">
                         <div class="d-flex justify-content-center">
                             <div class="input-group w-75-90">
-                              <input :type="password" maxlength="254" minlenght="5" class="form-control bg-light-50 rounded-pill-left w-75-90" v-model="contrasena" aria-label="" aria-describedby="button-addon2">
+                              <input :type="password" maxlength="254" minlenght="5" class="form-control bg-light-50 rounded-pill-left w-75-90" placeholder="Contraseña" v-model="contrasena" aria-label="" aria-describedby="button-addon2">
                               <div class="input-group-append">
-                                <button class="btn btn-primary" v-on:click="ver_contrasena()" type="button" id="button-addon2 rounded-pill-right">ver</button>
+                                <button class="btn btn-secondary waves-effect" v-on:click="ver_contrasena()" type="button" id="button-addon2 rounded-pill-right"><i class="fa" :class="eye" aria-hidden="true"></i></button>
                               </div>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-center">
-                            <small id="helpId" class="text-white">La contraseña debe tener minimo 5 caracteres</small>
-                        </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group my-3">
                         <div class="d-flex justify-content-center">
                             <button type="button" class="btn btn-dark rounded-pill btn-lg"
                             v-on:click="register()">Registrarme</button>
@@ -54,10 +34,11 @@
                     </div>
                 </form>
                 <div class="row m-0 mb-2">
-                    <div class="col-12 d-flex justify-content-end">
+                    <div class="col-11 d-flex justify-content-end pl-4 pb-3">
                         <div>
-                        <router-link  class="btn btn-link text-dark"
-                            :to="{name: 'papper_login'}">¿Ya tengo una cuenta?</router-link>
+                            <router-link  class="text-muted small" role="button"
+                                :to="{name: 'papper_login'}">¿Ya tengo una cuenta?
+                            </router-link>
                         </div>
                     </div>
                 </div>
@@ -67,18 +48,29 @@
 </template>
 <script>
 export default {
+    created() {
+        let usuario = localStorage.getItem("logueado") || "No";
+        if(usuario != "No")  location.hash ="/inicio";
+    },
     data(){
         return {
             nombreApellido: '',
             correo: '',
             contrasena: '',
-            password: 'password'
+            password: 'password',
+            eye: "fa-eye"
         }
     },
     methods: {
         ver_contrasena(){
-            if(this.password == 'password')this.password = 'text';
-            else this.password = 'password';
+            if(this.password == 'password'){
+                this.eye = "fa-eye-slash";
+                this.password = 'text';
+            }
+            else{
+                this.eye = "fa-eye";
+                this.password = 'password';
+            }
         },
         async register(){
             const regular = {
@@ -104,8 +96,9 @@ export default {
                     });
                     const respuesta = await consulta.text();
                     if(respuesta == "2"){
+                        localStorage.setItem("logueado","Si");
                         alertify.success("Entrando...");
-                        location.href = "./papper/home";
+                        location.href = "./home";
                     }
                     else if(respuesta == "1"){
                         carga.classList.remove("d-flex");

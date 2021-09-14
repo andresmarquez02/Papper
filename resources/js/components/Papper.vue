@@ -35,6 +35,9 @@ export default {
         }
         let token = document.querySelector('meta#token').getAttribute('content');
         this.$store.state.token = token;
+        let loged = localStorage.getItem("logueado")
+        if(loged === null)localStorage.setItem("logueado","No");
+
     },
     data(){
         return {

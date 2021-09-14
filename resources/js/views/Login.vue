@@ -4,37 +4,37 @@
             <div class="bg-light-50 shadow-double py-4 rounded-xl w-50-75">
                 <div class="form-group mt-3">
                     <div class="d-flex justify-content-center">
-                        <h1 class="font-weight-bold">Iniciar sesion</h1>
+                        <h2 class="font-weight-bold text-dark">Iniciar sesion</h2>
                     </div>
                 </div>
 
                     <div class="form-group">
-                        <div class="d-flex justify-content-center">
+                        <!-- <div class="d-flex justify-content-center">
                             <label for="" class="text-dark">Correo</label>
-                        </div>
+                        </div> -->
                         <div class="d-flex justify-content-center">
-                            <input type="email" class="form-control bg-light-50 rounded-pill w-75-90" v-model="correo">
+                            <input type="email" name="emil" class="form-control bg-light-50 rounded-pill w-75-90" placeholder="Correo" v-model="correo">
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="d-flex justify-content-center">
+                        <!-- <div class="d-flex justify-content-center">
                             <label for="" class="text-dark ">Contraseña</label>
-                        </div>
+                        </div> -->
                         <div class="d-flex justify-content-center">
-                            <input type="password" class="form-control bg-light-50 rounded-pill w-75-90" v-model="contrasena">
+                            <input type="password" name="password" class="form-control bg-light-50 rounded-pill w-75-90" placeholder="Contraseña" v-model="contrasena">
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="d-flex justify-content-center">
-                            <button type="button" class="btn btn-dark rounded-pill btn-lg"
+                            <button type="button" class="btn btn-dark rounded-pill"
                             v-on:click.prevent="ingress()">Ingresar</button>
                         </div>
                     </div>
 
                 <div class="row m-0 mb-2">
-                    <div class="col-12 d-flex justify-content-end">
+                    <div class="col-11 d-flex justify-content-end">
                         <div class="d-flex justify-content-end">
-                        <router-link class="btn btn-link text-dark"
+                        <router-link class="text-muted small" role="button"
                            :to="{name: 'papper_register'}">¿Aun no tienes una cuenta?</router-link>
                         </div>
                     </div>
@@ -45,6 +45,10 @@
 </template>
 <script>
 export default {
+    created() {
+        let usuario = localStorage.getItem("logueado") || "No";
+        if(usuario != "No")  location.hash ="/inicio";
+    },
     data(){
         return {
             correo: '',
@@ -74,8 +78,9 @@ export default {
                     });
                     const respuesta = await consulta.text();
                     if(respuesta == "true"){
+                        localStorage.setItem("logueado","Si");
                         alertify.success("Entrando...");
-                        location.href = "./papper/home";
+                        location.href = "./home";
                     }
                     else{
                         carga.classList.remove("d-flex");

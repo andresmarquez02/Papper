@@ -11,6 +11,7 @@
     </div>
     <script src="{{asset('alertify/lib/alertify.min.js')}}"></script>
     <script src="{{asset('js/app.js')}}"></script>
+    <script src="{{asset('js/waves.js')}}"></script>
     <script>
         let pre = document.getElementById('carga')
         document.addEventListener('Load', function(){

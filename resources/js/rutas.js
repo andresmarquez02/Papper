@@ -12,6 +12,16 @@ export default new VueRouter({
     routes: [
         {
             path:'/',
+            name: 'principal',
+            component: Preguntas
+        },
+        {
+            path:'/comentarios/:id',
+            name: 'comentarios',
+            component: Comentarios
+        },
+        {
+            path:'/login',
             name: 'papper_login',
             component: Login
         },
@@ -19,11 +29,6 @@ export default new VueRouter({
             path:'/register',
             name: 'papper_register',
             component: Registro
-        },
-        {
-            path:'/comentarios',
-            name: 'comentarios',
-            component: Comentarios
         },
         {
             path:'/inicio',
@@ -34,11 +39,6 @@ export default new VueRouter({
             path:'/perfil',
             name: 'perfil',
             component: MiPerfil
-        },
-        {
-            path:'/no-back-button',
-            name: 'atras',
-            component: Login
         },
         {
             path:'*',
