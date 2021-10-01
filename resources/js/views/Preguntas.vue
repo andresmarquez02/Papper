@@ -10,7 +10,7 @@
                 <div class="col-6 p-0">
                     <span>{{ preguntas.nombre_apellido }}</span>
                 </div>
-                <div class="col-6 p-0 d-flex justify-content-end" v-if="$store.state.usuario.length > 0">
+                <div class="col-6 p-0 d-flex justify-content-end" v-if="$store.state.usuario !== null">
                     <div class="dropdown dropleft">
                         <span class="cursor-pointer" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">...</span>
@@ -135,7 +135,7 @@ export default {
             }
         },
         async like(value,key){
-            if(this.$store.state.usuario.length == 0) return location.hash = "/login";
+            if(this.$store.state.usuario == null) return location.hash = "/login";
             let token = document.querySelector('meta#token').getAttribute('content');
             let confirma = document.getElementById('corazon_'+value);
             let likex = confirma.getAttribute('like');

@@ -7,7 +7,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         preguntas:[],
-        usuario:[],
+        usuario: null,
         grupos: [],
         likes_generales: [],
         referencia_grupo: [],

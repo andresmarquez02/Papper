@@ -1,6 +1,6 @@
 <template>
     <div class="pt-3 pb-3 px-md-5">
-        <div v-if="$store.state.usuario.lenght > 0">
+        <div v-if="$store.state.usuario !== null">
             <router-link class="btn btn-outline-light rounded-circle" to="/inicio">
                 <i class="fas fa-arrow-left"></i>
             </router-link>
@@ -29,7 +29,7 @@
                 <div class="col-6 p-0">
                     <span>{{ comentario.nombre_apellido }}</span>
                 </div>
-                <div class="col-6 p-0 d-flex justify-content-end" v-if="$store.state.usuario.lenght > 0">
+                <div class="col-6 p-0 d-flex justify-content-end" v-if="$store.state.usuario !== null">
                     <div class="dropdown dropleft">
                         <span class="cursor-pointer" id="triggerIdss" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">...</span>
@@ -59,7 +59,7 @@
         v-if="$store.state.commentarios == ''">
             <h2 class="text-center text-white font-weight-bold">Sin comentarios...</h2>
         </div>
-        <div class="my-3 px-lg-4 pt-4 pb-2" v-if="$store.state.usuario.lenght > 0">
+        <div class="my-3 px-lg-4 pt-4 pb-2" v-if="$store.state.usuario !== null">
             <div class="col-12 btn-group p-0 btn-group-toggle">
                 <input type="text" class="form-control rounded-0 rounded-left col-md-11 col-sm-10 col-10" placeholder="comentario..."
                 v-model="$store.state.comentario" v-on:keyup.enter="comentar()" maxlength="255" minlength="1">
@@ -95,7 +95,7 @@
 export default {
     mounted() {
         let intervalo = setInterval(()=> {
-            if(this.$store.state.commentarios.length > 0){
+            if(this.$store.state.commentarios !== null){
                 this.mi_like();
                 window.clearInterval(intervalo);
             }
@@ -111,7 +111,7 @@ export default {
     },
     methods: {
         async like(value){
-            if(this.$store.state.usuario.length == 0) return location.hash = "/login";
+            if(this.$store.state.usuario === null) return location.hash = "/login";
 
             let token = document.querySelector('meta#token').getAttribute('content');
             let confirma = document.getElementById('corazon_'+value);
@@ -152,7 +152,7 @@ export default {
             }
         },
         async like_comentario(value){
-            if(this.$store.state.usuario.length == 0) return location.hash = "/login";
+            if(this.$store.state.usuario == null) return location.hash = "/login";
 
             let token = document.querySelector('meta#token').getAttribute('content');
             let ids = document.getElementById('comentarios_c'+value);
@@ -188,7 +188,7 @@ export default {
         },
         comentar(){
 
-            if(this.$store.state.usuario.length == 0) return location.hash = "/login";
+            if(this.$store.state.usuario == null) return location.hash = "/login";
             const regular =  /^.{1,400000000}$/ ;
             let pre = document.getElementById('carga')
             if(regular.test(this.$store.state.comentario)){

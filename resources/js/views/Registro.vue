@@ -8,18 +8,18 @@
                 <form v-on:keyup.enter="ingress()">
                     <div class="form-group my-3">
                         <div class="d-flex justify-content-center">
-                            <input type="text" maxlength="254" minlenght="5" class="form-control bg-light-50 rounded-pill w-75-90" placeholder="Usuario" v-model="nombreApellido">
+                            <input type="text" maxlength="254" minlength="5" class="form-control bg-light-50 rounded-pill w-75-90" placeholder="Usuario" v-model="nombreApellido">
                         </div>
                     </div>
                     <div class="form-group my-3">
                         <div class="d-flex justify-content-center">
-                            <input type="email" maxlength="254" minlenght="5" class="form-control bg-light-50 rounded-pill w-75-90" placeholder="Correo" v-model="correo">
+                            <input type="email" maxlength="254" minlength="5" class="form-control bg-light-50 rounded-pill w-75-90" placeholder="Correo" v-model="correo">
                         </div>
                     </div>
                     <div class="form-group my-3">
                         <div class="d-flex justify-content-center">
                             <div class="input-group w-75-90">
-                              <input :type="password" maxlength="254" minlenght="5" class="form-control bg-light-50 rounded-pill-left w-75-90" placeholder="Contraseña" v-model="contrasena" aria-label="" aria-describedby="button-addon2">
+                              <input :type="password" maxlength="254" minlength="5" class="form-control bg-light-50 rounded-pill-left w-75-90" placeholder="Contraseña" v-model="contrasena" aria-label="" aria-describedby="button-addon2">
                               <div class="input-group-append">
                                 <button class="btn btn-secondary waves-effect" v-on:click="ver_contrasena()" type="button" id="button-addon2 rounded-pill-right"><i class="fa" :class="eye" aria-hidden="true"></i></button>
                               </div>

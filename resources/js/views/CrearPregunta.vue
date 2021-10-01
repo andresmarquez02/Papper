@@ -12,7 +12,7 @@
                     <div class="modal-body" v-on:keyup.Enter="publicar()">
                         <div class="form-group">
                             <label for="">Título</label>
-                            <input type="text" class="form-control" v-model="titulo" minlength="1" maxlenght="254" placeholder="Alguien me puede ayudar con este codígo?">
+                            <input type="text" class="form-control" v-model="titulo" minlength="1" maxlength="254" placeholder="Alguien me puede ayudar con este codígo?">
                         </div>
                         <div class="form-group">
                             <label for="">Grupo</label>
@@ -23,7 +23,7 @@
                         </div>
                         <div class="form-group">
                             <label for="">Descripción</label>
-                            <textarea class="form-control" v-model="descripcion" minlength="1" maxlenght="254" rows="3" placeholder="<?php echo Hola Mundo;?>"></textarea>
+                            <textarea class="form-control" v-model="descripcion" minlength="1" maxlength="254" rows="3" placeholder="<?php echo Hola Mundo;?>"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
