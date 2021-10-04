@@ -2,7 +2,7 @@
     /* #7b062f */
     /* #fb9396 */
     /* #eca0bc */
-    --primary-color:#bd5fa4;
+    --primary-color:#fd6061;
     --secondary-color: #1895cf;
     --primary-white: #e24bba;
     --secondary-white: #1895cf;
@@ -19,7 +19,7 @@ ul li{
     font-size: 1.1rem !important;
 }
 .img_home{
-    background-image: url(../img/eezy_64.svg);
+    background-image: url(../img/vecteezyfall-season-illustration0621_generated.jpg);
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
@@ -39,11 +39,11 @@ ul li{
 }
 .bg-purple-blue{
     transition: .6s background-color ease-in-out;
-    background-color:#9c4c92;
+    background-color:var(--primary-color) !important;
 }
 .bg-purple-blue-2{
     transition: .6s background-color ease-in-out;
-    background-color: #9c4c92;
+    background-color: var(--primary-white) !important;
 }
 .top{
     transition: .6s background-color ease-in-out;

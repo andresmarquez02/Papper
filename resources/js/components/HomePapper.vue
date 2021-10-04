@@ -1,7 +1,7 @@
 <template>
     <div class="img_home" style="background-attachment: fixed">
        <header class="fixed-top">
-            <nav  class="navbar navbar-expand-md navbar-dark w-100 fixed-top shadow-lg" id="nav_bar">
+            <nav  class="navbar navbar-expand-md navbar-light w-100 fixed-top shadow-lg" id="nav_bar">
                 <a class="navbar-brand" href="#/inicio" v-on:click.prevent="por_grupo(0)">{{ $store.state.usuario.nombre_apellido }}</a>
                 <button class="navbar-toggler btn btn-light rounded-pill d-lg-none" type="button" aria-controls="collapsibleNavId"
                     aria-expanded="false" aria-label="Toggle navigation" data-toggle="modal" data-target="#modelId">Crear publicación</button>
@@ -46,7 +46,7 @@
                             </div>
                         </li>
                         <li class="nav-item">
-                            <span class="nav-link text-white-50" role="button" v-on:click="logout()" data-toggle="tooltip" data-placement="top"
+                            <span class="nav-link" role="button" v-on:click="logout()" data-toggle="tooltip" data-placement="top"
                             title="Salir">
                             <i class="fa fa-sign-out" aria-hidden="true"></i>
                             <span class="sr-only">Salir</span>Salir</span>

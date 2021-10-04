@@ -1,6 +1,6 @@
 <template>
     <div class="img_home">
-        <nav class="navbar navbar-expand-sm navbar-dark w-100 fixed-top shadow-lg" id="nav_bar">
+        <nav class="navbar navbar-expand-sm navbar-light w-100 fixed-top shadow-lg" id="nav_bar">
             <a class="navbar-brand" href="#/">Papper</a>
             <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" v-on:click="bar()" data-target="#collapsibleNavId" aria-controls="collapsibleNavId"
                 aria-expanded="false" aria-label="Toggle navigation"></button>
