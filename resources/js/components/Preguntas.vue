@@ -1,79 +1,103 @@
 <template>
     <div class="pt-3 pb-3 px-md-5">
-        <div v-if="$store.state.referencia_grupo.grupo !== null">
-            <h2 class="text-white px-4 cursor-pointer text-decoration"
-            v-on:click="per_grupo($store.state.referencia_grupo.id)">
-            {{ $store.state.referencia_grupo.grupo !== null ? $store.state.referencia_grupo.grupo : "" }}</h2>
+        <div v-if="$store.state.referencia_grupo.grupo != undefined && $store.state.referencia_grupo.grupo != ''
+        && $store.state.referencia_grupo.grupo != null">
+            <div style="padding-top: 1.5rem;">
+                <span class="px-4 cursor-pointer text-decoration h2 font-weight-bold"
+                v-on:click="per_grupo($store.state.referencia_grupo.id)">
+                    <i class="fa fa-hashtag" aria-hidden="true"></i>
+                    {{ $store.state.referencia_grupo.grupo !== null ? $store.state.referencia_grupo.grupo : "" }}
+                </span>
+            </div>
         </div>
-        <div class="shadow bg-light-50 my-3 px-4 pt-4 pb-2"  v-for="(preguntas, key) in $store.state.preguntas" v-bind:key="key">
-            <div class="row m-0">
-                <div class="col-6 p-0">
+        <div class="px-4 pt-4 pb-2 my-4 bg-light-50 card-preg"  v-for="(preguntas, key) in $store.state.preguntas" v-bind:key="key">
+            <div class="m-0 row">
+                <div class="p-0 col-6">
                     <span>{{ preguntas.nombre_apellido }}</span>
+                    <small class="d-block small-hora text-muted">{{preguntas.created_at}}</small>
                 </div>
-                <div class="col-6 p-0 d-flex justify-content-end" v-if="$store.state.usuario !== null">
+                <div class="p-0 col-6 d-flex justify-content-end" v-if="$store.state.usuario !== null">
                     <div class="dropdown dropleft">
                         <span class="cursor-pointer" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">...</span>
                         <div class="dropdown-menu" v-if="preguntas.id_usuario == $store.state.usuario.id" aria-labelledby="triggerId">
-                            <h6 class="dropdown-item cursor-pointer" v-on:click="denunciar()">Denunciar</h6>
-                            <h6 class="dropdown-item cursor-pointer" v-on:click="modal_cambiar(preguntas.titulo,preguntas.descripcion,preguntas.id_grupo,preguntas.id)"
+                            <h6 class="cursor-pointer dropdown-item" v-on:click="denunciar()">Denunciar</h6>
+                            <h6 class="cursor-pointer dropdown-item" v-on:click="modal_cambiar(preguntas)"
                              data-toggle="modal" data-target="#modelEditar">Editar</h6>
-                            <h6 class="dropdown-item cursor-pointer" v-on:click="modal_elimiar(preguntas.id)"
+                            <h6 class="cursor-pointer dropdown-item" v-on:click="modal_elimiar(preguntas.id)"
                              data-toggle="modal" data-target="#modelEliminar">Eliminar</h6>
                         </div>
                         <div class="dropdown-menu" v-else aria-labelledby="triggerId">
-                            <h6 class="dropdown-item cursor-pointer" v-on:click="denunciar()">Denunciar</h6>
+                            <h6 class="cursor-pointer dropdown-item" v-on:click="denunciar()">Denunciar</h6>
                         </div>
                     </div>
                 </div>
             </div>
-            <h2>{{ preguntas.titulo }}</h2>
-            <p> {{preguntas.descripcion}}
-            </p>
+            <div>
+                <h2 class="font-weight-bold">{{ preguntas.titulo }}</h2>
+                <p class="mb-1">
+                    <i class="fa fa-quote-left ss-small" aria-hidden="true"></i>
+                    {{preguntas.descripcion}}
+                    <i class="fa fa-quote-right ss-small" aria-hidden="true"></i>
+                </p>
+                <div class="mb-3">
+                    <small class="mr-3"><i class="fa fa-hashtag" aria-hidden="true"></i> Grupo</small>
+                    <small><i class="fa fa-hashtag" aria-hidden="true"></i> {{preguntas.grupo}}</small>
+                </div>
+            </div>
             <div>
                 <span>
-                    <i class="fa fa-heart-o h5 cursor-pointer" :id="'corazon_'+preguntas.id" v-on:click="like(preguntas.id,key)"
+                    <i class="cursor-pointer fa fa-heart-o h5 waves-effect" :id="'corazon_'+preguntas.id" v-on:click="like(preguntas.id,key)"
                      aria-hidden="true" like="No"></i>
                     <span class="mr-2" :id="'likes'+preguntas.id">{{preguntas.likes}}</span>
                 </span>
                 <span>
                     <router-link class="text-dark" :to="'/comentarios/'+preguntas.id">
                         <span>
-                            <i class="fa fa-comment h5 cursor-pointer" aria-hidden="true"></i>
+                            <i class="cursor-pointer fa fa-comment h5" aria-hidden="true"></i>
                             {{ preguntas.comentarios }}
                         </span>
                     </router-link>
                 </span>
             </div>
         </div>
+        <div v-if="$store.state.preguntas.length == 0">
+            <h2 class="py-5 text-center font-weight-bold">
+                <i class="fas fa-grin-beam-sweat "></i> <br>
+                No hay publicaciones para mostrar
+            </h2>
+        </div>
         <div class="modal" id="modelEditar" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Tu publicación</h5>
+                        <h5 class="modal-title">Editar Publicación</h5>
                         <button type="button" id="cerrarEditar" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="">Titulo</label>
-                            <input type="text" class="form-control" v-on:keyup.Enter="cambiar()" v-model="titulo_editar">
+                    <form v-on:submit.prevent="cambiar()">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="">Titulo</label>
+                                <input type="text" class="form-control" v-model="titulo_editar">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Grupo</label>
+                                <select class="form-control" v-model="id_grupo_editar">
+                                    <option v-for="grupo in $store.state.grupos" :value="grupo.id" v-bind:key="grupo.id">{{ grupo.grupo }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Descripción</label>
+                                <textarea class="form-control" v-model="descripcion_editar" rows="3"></textarea>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="">Grupo</label>
-                            <select class="form-control" v-on:keyup.Enter="cambiar()" id="grupos" v-model="id_grupo_editar">
-                            </select>
+                        <div class="modal-footer d-flex justify-content-center">
+                            <button type="submit" class="btn btn-warning rounded-pill waves-effect"
+                            ><i class="fa fa-check-circle" aria-hidden="true"></i> Actualizar</button>
                         </div>
-                        <div class="form-group">
-                            <label for="">Descripción</label>
-                            <textarea class="form-control" v-on:keyup.Enter="cambiar()" v-model="descripcion_editar" rows="3"></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer d-flex justify-content-center">
-                        <button type="button" class="btn btn-dark rounded-pill"
-                        v-on:click="cambiar()">Guardar</button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -88,19 +112,19 @@
                             </button>
                     </div>
                     <div class="modal-body">
-                        <h2>Esta seguro de eliminar esta publicacion?</h2>
+                        <h2 class="text-center">Esta seguro de eliminar esta publicacion?</h2>
                     </div>
-                    <div class="modal-footer d-flex justify-content-center">
+                    <div class="modal-footer">
                         <div>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                            <button type="button" class="btn btn-danger" data-dismiss="modal" v-on:click="eliminar()">Si</button>
+                            <button type="button" class="px-4 btn btn-secondary waves-effect" data-dismiss="modal"><i class="fa fa-times-circle" aria-hidden="true"></i> No</button>
+                            <button type="button" class="px-4 btn btn-danger waves-effect" data-dismiss="modal" v-on:click="eliminar()"><i class="fa fa-trash" aria-hidden="true"></i> Si</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div>
-            <h1 class="text-center text-white font-weight-bold px-4">{{ $store.state.no_encontro_nada }}</h1>
+            <h1 class="px-4 text-center text-white font-weight-bold">{{ $store.state.no_encontro_nada }}</h1>
         </div>
     </div>
 </template>
@@ -125,15 +149,6 @@ export default {
         }
     },
     methods: {
-        filtrado(value){
-            if(value.toLocaleLowerCase().indexOf(this.$store.state.buscador.toLocaleLowerCase()) >= 0){
-                return value.toLocaleLowerCase().indexOf(this.$store.state.buscador.toLocaleLowerCase()) >= 0;
-            }
-            else{
-                alertify.error("No se encontraron resultados");
-                return value;
-            }
-        },
         async like(value,key){
             if(this.$store.state.usuario == null) return location.hash = "/login";
             let token = document.querySelector('meta#token').getAttribute('content');
@@ -178,55 +193,55 @@ export default {
             localStorage.setItem('grupo',value)
             this.$store.dispatch('preguntas_get');
         },
-        modal_cambiar(titulo,descripcion,id_grupo,id_pregunta){
-            this.titulo_editar = titulo;
-            this.descripcion_editar = descripcion;
-            this.id_grupo_editar = id_grupo;
-            this.id_pregunta = id_pregunta;
-            let grupos = document.getElementById('grupos');
-            for(var i = 0; i <  this.$store.state.grupos.length;i++){
-                if(this.$store.state.grupos[i].id == id_grupo){
-                    grupos.innerHTML += "<option selected value="+this.$store.state.grupos[i].id+">"+this.$store.state.grupos[i].grupo+"</option>";
-                }
-                else{
-                    grupos.innerHTML += "<option value="+this.$store.state.grupos[i].id+">"+this.$store.state.grupos[i].grupo+"</option>";
-                }
-            }
+        modal_cambiar(pregunta){
+            this.titulo_editar = pregunta.titulo;
+            this.descripcion_editar = pregunta.descripcion;
+            this.id_grupo_editar = pregunta.id_grupo;
+            this.id_pregunta = pregunta.id;
         },
         async cambiar(){
-            const regular =  /^[a-zA-ZÁ-ÿ\s\,\.]{1,250}$/,
+            const regular =  /^.{1,250}$/,
             regularNumber =  /^\d{1,15}$/;
             const regularDesc = /^.{1,400000000}$/;
             let token = document.querySelector('meta#token').getAttribute('content');
             if(regular.test(this.titulo_editar) && regularDesc.test(this.descripcion_editar)
             && regularNumber.test(this.id_grupo_editar)){
-                let formulario = new FormData();
-                formulario.append('titulo',this.titulo_editar);
-                formulario.append('descripcion',this.descripcion_editar);
-                formulario.append('id_grupo',this.id_grupo_editar);
-                alertify.success('Editando y guardando');
-                const consulta = await fetch('editar_pregunta/'+this.id_pregunta,{
-                    method: 'POST',
-                    body: formulario,
-                    headers: {
-                        'X-CSRF-TOKEN':token
-                    }
-                });
-                const respuesta = await consulta.text();
-                if(respuesta == "Exito"){
-                    for(var i = 0; i < this.$store.state.preguntas.length; i++){
-                        if(this.$store.state.preguntas[i].id == this.id_pregunta){
-                            this.$store.state.preguntas[i].titulo = this.titulo_editar;
-                            this.$store.state.preguntas[i].descripcion = this.descripcion_editar;
-                            this.$store.state.preguntas[i].id_grupo = this.id_grupo_editar;
+                try {
+                    let formulario = new FormData();
+                    formulario.append('titulo',this.titulo_editar);
+                    formulario.append('descripcion',this.descripcion_editar);
+                    formulario.append('id_grupo',this.id_grupo_editar);
+                    alertify.success('Editando y guardando');
+                    const consulta = await fetch('editar_pregunta/'+this.id_pregunta,{
+                        method: 'POST',
+                        body: formulario,
+                        headers: {
+                            'X-CSRF-TOKEN':token
                         }
+                    });
+                    const respuesta = await consulta.json();
+                    if(consulta.status === 200){
+                        this.$store.dispatch('preguntas_get');
+                        let obj =document.getElementById('cerrarEditar');
+                        obj.click();
+                        alertify.success(respuesta.exito);
                     }
-                    let obj =document.getElementById('cerrarEditar');
-                    obj.click();
-                    alertify.success('Editado con exito.');
-                }
-                else{
-                     alertify.error('Error. reintente de nuevo.');
+                    else throw([respuesta,consulta.status]);
+                } catch (errors) {
+                    carga.classList.remove("d-flex");
+                    carga.classList.add("d-none");
+                    if(errors[1] == 422){
+                        if(errors[0].errors.usuario)
+                            return alertify.error(errors[0].errors.usuario);
+                        if(errors[0].errors.correo)
+                            return alertify.error(errors[0].errors.correo);
+                        if(errors[0].errors.contrasena)
+                            return alertify.error(errors[0].errors.contrasena);
+                    }
+                    else if(errors[1] == 500){
+                        if(errors[0].error)
+                            alertify.error(errors[0].error);
+                    }
                 }
             }
             else{

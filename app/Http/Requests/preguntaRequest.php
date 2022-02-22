@@ -25,8 +25,17 @@ class preguntaRequest extends FormRequest
     {
         return [
             'titulo' => 'required|string|max:254|min:1',
-            'descripcion' => 'required|string|max:254|min:1',
+            'descripcion' => 'required|string',
             'grupo' => 'required|numeric|exists:grupos,id',
+        ];
+    }
+    public function message(){
+        return [
+            'titulo.required' => 'El titulo es requerido',
+            'titulo.max' => 'El titulo es muy extenso',
+            'descripcion.required' => 'La descripcion es requerida',
+            'grupo.required' => 'El grupo requerido',
+            'grupo.exists' => 'El gurpo selecionado no existe',
         ];
     }
 }

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegistroRequest;
 use Illuminate\Http\Request;
-use Auth;
-use DB;
-use Session;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 class login_register extends Controller
 {
     public function index()
@@ -13,47 +14,29 @@ class login_register extends Controller
         return view('papper.index');
     }
 
-    public function store(Request $request)
+    public function store(LoginRequest $request)
     {
-        $this->validate($request,[
-            'correo' => 'required|email|string|min:5',
-            'contrasena' => 'required|string|min:5'
-        ]);
         if(Auth::attempt(['email' => $request->correo, 'password' => $request->contrasena])){
-            return "true";
+            return response()->json(200);
         }
         else{
-            return "false";
+            return response()->json(["error"=>"Las credenciales son incorrectas."], 500);
         }
     }
-    public function register(Request $request)
+    public function register(RegistroRequest $request)
     {
-        $this->validate($request,[
-            'an' => 'required|string|min:5|max:254',
-            'correo' => 'required|email|string|min:5|max:254',
-            'contrasena' => 'required|min:5|max:254'
-        ]);
-        $errorCorreo = DB::table('users')->where('email',$request->correo)->value('email');
-        if(! empty($errorCorreo)){
-            return "1";
-        }
-        $errorCorreo = DB::table('users')->where('nombre_apellido',$request->an)->value('nombre_apellido');
-        if(! empty($errorCorreo)){
-            return "4";
-        }
-        else{
-            $contrasena = bcrypt($request->contrasena);
+        DB::beginTransaction();
+        try {
             DB::table('users')->insert([
-                'nombre_apellido' => $request->an,
+                'nombre_apellido' => $request->usuario,
                 'email' => $request->correo,
-                'password' => $contrasena,
+                'password' => bcrypt($request->contrasena),
             ]);
-        }
-        if(Auth::attempt(['email' => $request->correo, 'password' => $request->contrasena])){
-            return "2";
-        }
-        else{
-            return "3";
+            DB::commit();
+            return response()->json(["exito" => "Cuenta creada con exito"], 200);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return response()->json(["error"=>"Error inesperado, intenta mas tarde"], 500);
         }
     }
 }

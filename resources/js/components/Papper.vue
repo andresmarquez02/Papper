@@ -1,16 +1,18 @@
 <template>
     <div class="img_home">
-        <nav class="navbar navbar-expand-sm navbar-light w-100 fixed-top shadow-lg" id="nav_bar">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-purple-blue w-100 fixed-top" id="nav_bar">
             <a class="navbar-brand" href="#/">Papper</a>
-            <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" v-on:click="bar()" data-target="#collapsibleNavId" aria-controls="collapsibleNavId"
-                aria-expanded="false" aria-label="Toggle navigation"></button>
+            <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" v-on:click="navbar()" data-target="#collapsibleNavId" aria-controls="collapsibleNavId"
+            aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fa" :class="icon_nav" aria-hidden="true"></i>
+            </button>
             <div class="collapse navbar-collapse" id="collapsibleNavId">
-                <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                <ul class="mt-2 ml-auto navbar-nav mt-lg-0">
                     <li class="nav-item">
-                        <router-link id="get" v-on:click="buttons(1)" class="nav-link" :to="{name: 'papper_login'}">Login</router-link>
+                        <router-link class="nav-link" :to="{name: 'papper_login'}">Login</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link id="gett" v-on:click="buttons(2)" class="nav-link" :to="{name: 'papper_register'}">Registro</router-link>
+                        <router-link class="nav-link" :to="{name: 'papper_register'}">Registro</router-link>
                     </li>
                 </ul>
             </div>
@@ -21,52 +23,23 @@
 <script>
 export default {
     mounted() {
-        let top = document.getElementById('nav_bar');
-        window.onscroll = function(){
-            var y = window.scrollY;
-            if(y > 20){
-                top.classList.remove("top");
-                top.classList.add("bg-purple-blue");
-            }
-            else{
-                top.classList.add("top");
-                top.classList.remove("bg-purple-blue");
-            }
-        }
         let token = document.querySelector('meta#token').getAttribute('content');
         this.$store.state.token = token;
         let loged = localStorage.getItem("logueado")
         if(loged === null)localStorage.setItem("logueado","No");
+        else localStorage.setItem("logueado","No");
 
     },
     data(){
         return {
-            active: '',
-            active2: '',
-            pulse: 0,
+            icon_nav: 'fa-bars'
         }
     },
     methods: {
-        buttons(value){
-            if(value === 1){
-                localStorage.setItem('active','1');
-                localStorage.setItem('grupo','0')
-            }
-            else if(value === 2){
-                localStorage.setItem('active','2');
-                localStorage.setItem('grupo','0')
-            }
-        },
-        bar(){
-            let top = document.getElementById('nav_bar');
-            if(this.pulse == 0){
-                top.classList.add("bg-purple-blue-2");
-                this.pulse = 1;
-            }
-            else{
-                top.classList.remove("bg-purple-blue-2");
-                this.pulse = 0;
-            }
+        navbar(){
+            if( this.icon_nav === "fa-bars")
+                return this.icon_nav = "fa-times";
+            this.icon_nav = "fa-bars"
         }
     },
 }

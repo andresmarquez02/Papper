@@ -1,15 +1,9 @@
 <template>
     <div class="pt-5">
-        <main class="pt-5">
-            <div class="row m-0 text-dark">
-                <div class="col-md-2 col-sm-12"></div>
-                <div class="col-lg-10 col-md-12 col-sm-12">
-                    <div class="d-flex justify-content-center mt-2">
-                        <filtrado-pregunta />
-                    </div>
-                </div>
+        <main>
+            <div class="m-0 row text-dark">
                 <aside-left />
-                <div class="col-md-10 col-sm-12 mb-sm-5" id="centetro">
+                <div class="col-md-9 col-sm-12 mb-sm-5" id="centetro">
                     <preguntas />
                 </div>
             </div>

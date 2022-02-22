@@ -1,43 +1,48 @@
 <template>
-    <div style="padding-top:4rem">
-        <div class="d-flex justify-content-center align-items-center" style="min-height:calc(100vh - 4rem);">
-            <div class="bg-light-50 shadow-double w-50-75 rounded-xl">
-                <div class="form-group mt-3">
-                    <h2 class="font-weight-bold text-dark text-center">Registro</h2>
+    <div style="padding-top:4.5rem;">
+        <div class="d-flex justify-content-center align-items-center height-sm height-md">
+            <div class="bg-light-50 w-50-75 card-login rounded-xl">
+                <div class="py-2 mt-3">
+                    <h2 class="text-center font-weight-bold text-dark">
+                        <i class="fa fa-user-circle" aria-hidden="true"></i>
+                        <br>
+                        Registro
+                    </h2>
                 </div>
-                <form v-on:keyup.enter="ingress()">
-                    <div class="form-group my-3">
+                <form v-on:submit.prevent="register()" autocomplete="false">
+                    <div class="my-3 form-group">
                         <div class="d-flex justify-content-center">
-                            <input type="text" maxlength="254" minlength="5" class="form-control bg-light-50 rounded-pill w-75-90" placeholder="Usuario" v-model="nombreApellido">
+                            <input type="text" maxlength="254" minlength="5" class="form-control rounded-pill w-75-90" placeholder="Usuario" v-model="nombreApellido">
                         </div>
                     </div>
-                    <div class="form-group my-3">
+                    <div class="my-3 form-group">
                         <div class="d-flex justify-content-center">
-                            <input type="email" maxlength="254" minlength="5" class="form-control bg-light-50 rounded-pill w-75-90" placeholder="Correo" v-model="correo">
+                            <input type="email" maxlength="254" minlength="5" class="form-control rounded-pill w-75-90" placeholder="Correo" v-model="correo">
                         </div>
                     </div>
-                    <div class="form-group my-3">
+                    <div class="my-3 form-group">
                         <div class="d-flex justify-content-center">
                             <div class="input-group w-75-90">
-                              <input :type="password" maxlength="254" minlength="5" class="form-control bg-light-50 rounded-pill-left w-75-90" placeholder="Contraseña" v-model="contrasena" aria-label="" aria-describedby="button-addon2">
+                              <input :type="password" maxlength="254" minlength="5" class="form-control rounded-pill-left w-75-90" placeholder="Contraseña" v-model="contrasena" aria-label="" aria-describedby="button-addon2">
                               <div class="input-group-append">
-                                <button class="btn btn-secondary waves-effect" v-on:click="ver_contrasena()" type="button" id="button-addon2 rounded-pill-right"><i class="fa" :class="eye" aria-hidden="true"></i></button>
+                                <button class="btn btn-dark waves-effect btn-sm rounded-pill-right" v-on:click="ver_contrasena()" type="button" id="button-addon2"><i class="fa" :class="eye" aria-hidden="true"></i></button>
                               </div>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group my-3">
+                    <div class="my-3 form-group">
                         <div class="d-flex justify-content-center">
-                            <button type="button" class="btn btn-dark rounded-pill btn-lg"
-                            v-on:click="register()">Registrarme</button>
+                            <button type="submit" class="btn btn-primary waves-effect rounded-pill">
+                                 Registrarme
+                            </button>
                         </div>
                     </div>
                 </form>
-                <div class="row m-0 mb-2">
-                    <div class="col-11 d-flex justify-content-end pl-4 pb-3">
+                <div class="m-0 mb-2 row">
+                    <div class="pb-3 pl-4 col-11 d-flex justify-content-end">
                         <div>
                             <router-link  class="text-muted small" role="button"
-                                :to="{name: 'papper_login'}">¿Ya tengo una cuenta?
+                                :to="{name: 'papper_login'}">¿Ya tienes una cuenta?
                             </router-link>
                         </div>
                     </div>
@@ -48,9 +53,8 @@
 </template>
 <script>
 export default {
-    created() {
-        let usuario = localStorage.getItem("logueado") || "No";
-        if(usuario != "No")  location.hash ="/inicio";
+    mounted(){
+        localStorage.setItem("grupo",0);
     },
     data(){
         return {
@@ -84,51 +88,43 @@ export default {
                 carga.classList.add("d-flex");
                 let formulario = new FormData();
                 formulario.append('correo',this.correo);
-                formulario.append('an',this.nombreApellido);
+                formulario.append('usuario',this.nombreApellido);
                 formulario.append('contrasena',this.contrasena);
                 try {
                     const consulta = await fetch('register',{
                         method: 'POST',
                         body: formulario,
                         headers: {
-                            'X-CSRF-TOKEN': this.$store.state.token
+                            'X-CSRF-TOKEN': this.$store.state.token,
+                            'Accept': 'application/json'
                         }
                     });
-                    const respuesta = await consulta.text();
-                    if(respuesta == "2"){
-                        localStorage.setItem("logueado","Si");
-                        alertify.success("Entrando...");
-                        location.href = "./home";
+                    const respuesta = await consulta.json();
+                    if(consulta.status !== 200)
+                        throw([respuesta,consulta.status]);
+                    if(consulta.status === 200){
+                        alertify.success(respuesta.exito);
+                        this.$router.push("../../login");
                     }
-                    else if(respuesta == "1"){
-                        carga.classList.remove("d-flex");
-                        carga.classList.add("d-none");
-                        alertify.error("Este correo ya existe");
+                } catch (errors) {
+                    carga.classList.remove("d-flex");
+                    carga.classList.add("d-none");
+                    if(errors[1] == 422){
+                        if(errors[0].errors.usuario)
+                            return alertify.error(errors[0].errors.usuario);
+                        if(errors[0].errors.correo)
+                            return alertify.error(errors[0].errors.correo);
+                        if(errors[0].errors.contrasena)
+                            return alertify.error(errors[0].errors.contrasena);
                     }
-                    else if(respuesta == "3"){
-                        carga.classList.remove("d-flex");
-                        carga.classList.add("d-none");
-                        alertify.error("Error de validación");
+                    else if(errors[1] == 500){
+                        if(errors[0].error)
+                            alertify.error(errors[0].error);
                     }
-                    else if(respuesta == "4"){
-                        carga.classList.remove("d-flex");
-                        carga.classList.add("d-none");
-                        alertify.error("Este usuario ya se esta usando.");
-                    }
-                    else{
-                        carga.classList.remove("d-flex");
-                        carga.classList.add("d-none");
-                        alertify.error("Datos incorrectos");
-                        alertify.error("La contraseña debe ser de minimo 5 caracteres");
-                    }
-                } catch (error) {
-                    // alertify.error("Correo o contraseña erronea");
                 }
-                // location.href="./pappers";
             }
             else{
-                alertify.error("Debe rellenar todos los campos",10000);
-                alertify.error("Recuerde que debe ser un formato de correo valido",10000);
+                alertify.error("Debe rellenar todos los campos");
             }
         }
     },

@@ -21,13 +21,16 @@
                                 <option v-for="grupo in $store.state.grupos" :value="grupo.id" v-bind:key="grupo.id">{{ grupo.grupo }}</option>
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="mb-0 form-group">
                             <label for="">Descripción</label>
                             <textarea class="form-control" v-model="descripcion" minlength="1" maxlength="254" rows="3" placeholder="<?php echo Hola Mundo;?>"></textarea>
                         </div>
                     </div>
-                    <div class="modal-footer d-flex justify-content-center">
-                        <button type="button" v-on:click="publicar()" class="btn btn-outline-dark rounded-pill">Guardar</button>
+                    <div class="modal-footer">
+                        <button type="button" v-on:click="publicar()" class="btn btn-primary rounded-pill waves-effect">
+                            <i class="fas fa-save "></i>
+                            Guardar
+                        </button>
                     </div>
                 </div>
             </div>
@@ -45,7 +48,7 @@ export default {
     },
     methods: {
         async publicar(){
-            const regular =  /^[a-zA-ZÁ-ÿ\s\,\.]{1,250}$/,
+            const regular =  /^.{1,250}$/,
             regularNumber =  /^\d{1,15}$/;
             const regularDesc = /^.{1,400000000}$/;
             let token = document.querySelector('meta#token').getAttribute('content');
@@ -59,19 +62,16 @@ export default {
                             formulario.append('titulo',this.titulo);
                             formulario.append('descripcion',this.descripcion);
                             formulario.append('grupo',this.grupo);
-                            const consulta = await fetch('preguntas/save/logs',{
+                            const consulta = await fetch('guardar',{
                                 method: 'POST',
                                 body: formulario,
                                 headers:{
                                     'X-CSRF-TOKEN':this.$store.state.token
                                 }
                             });
-                            const respuesta = await consulta.text();
-                            if(respuesta == ""){
-                                alertify.error("Usted no ha cumplido los parametros de la publicación");
-                            }
-                            else{
-                                alertify.success(respuesta);
+                            const respuesta = await consulta.json();
+                            if(consulta.status === 200){
+                                alertify.success(respuesta.exito);
                                 this.recarga_preguntas();
                                 let obj = document.getElementById('close');
                                 obj.click();
@@ -79,34 +79,50 @@ export default {
                                 this.descripcion = "";
                                 this.grupo = "";
                             }
+                            else if(consulta.status !== 200){
+                                throw([respuesta,consulta.status])
+                            }
                         }
-                        catch(error){}
+                        catch(errors){
+                            if(errors[1] == 422){
+                                if(errors[0].errors.usuario)
+                                    return alertify.error(errors[0].errors.usuario);
+                                if(errors[0].errors.correo)
+                                    return alertify.error(errors[0].errors.correo);
+                                if(errors[0].errors.contrasena)
+                                    return alertify.error(errors[0].errors.contrasena);
+                            }
+                            else if(errors[1] == 500){
+                                if(errors[0].error)
+                                    alertify.error(errors[0].error);
+                            }
+                        }
                     }
                     else{
                         alertify.error("No altere los datos porfavor que no podra hackear el sistema");
                         setTimeout(()=>{
                             location.href = "./papper/home";
-                        },5000);
+                        },2000);
 
                     }
                 }
-                else{
+                else
                     alertify.error("El título de la publicación deben ser letras")
-                }
+
             }
             else{
-                if(!regular.test(this.titulo)){
+                if(!regular.test(this.titulo))
                     alertify.error('Pon un titulo a tu publicación');
-                }
-                else if(!regularNumber.test(this.grupo)){
+
+                else if(!regularNumber.test(this.grupo))
                     alertify.error('Selecciona un grupo');
-                }
-                else if(!regular.test(this.descripcion)){
+
+                else if(!regular.test(this.descripcion))
                     alertify.error('Crea una descripción para así poder tener más información de lo que quieres');
-                }
-                else{
+
+                else
                     alertify.error('Debes llenar todos lo campos');
-                }
+
             }
         },
         recarga_preguntas(){

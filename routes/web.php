@@ -10,23 +10,30 @@ Route::middleware(['guest'])->group(function () {
     Route::post('register', 'login_register@register');
 });
 
-Route::post('preguntas/{grupo}', 'usuarioController@create');
-Route::post('comentarios/{id}', 'usuarioController@comentarios');
+//Rutas para preguntas y comentarios
+Route::post('preguntas/{grupo}', 'PreguntasController@preguntas');
+Route::post('comentarios/{id}', 'ComentariosController@comentarios');
 Route::get('grupos', 'usuarioController@grupos');
-Route::post('filtrado/{grupo}/{palabra}', 'usuarioController@filtrado');
+Route::post('filtrado/{grupo}/{palabra}', 'PreguntasController@filtrado');
 
 Route::middleware(['auth'])->group(function () {
+    //usuario y datos
     Route::get('/home', 'usuarioController@index');
     Route::post('usuario', 'usuarioController@usuario');
-    Route::post('preguntas/save/logs', 'usuarioController@store');
-    Route::post('editar_pregunta/{id}', 'usuarioController@editar_pregunta');
-    Route::post('eliminar_pregunta/{id}', 'usuarioController@eliminar_pregunta');
-    Route::post('like/{id_pregunta}', 'usuarioController@likes');
-    Route::post('enviar/comentarios/{id}', 'usuarioController@guardar_comentarios');
-    Route::post('like/comentarios/{like}', 'usuarioController@likes_comentarios');
-    // Route::post('/papper/editar_comentario/{id}', 'usuarioController@editar_comentarios');
-    Route::post('eliminar_comentario/{id}', 'usuarioController@eliminar_comentarios');
-    Route::get('logout', 'usuarioController@logout');
     Route::get('notificaciones', 'usuarioController@notificaciones');
+
+    //Preguntas
+    Route::post('guardar', 'PreguntasController@store');
+    Route::post('editar_pregunta/{id}', 'PreguntasController@editar_pregunta');
+    Route::post('eliminar_pregunta/{id}', 'PreguntasController@eliminar_pregunta');
+    Route::post('like/{id_pregunta}', 'PreguntasController@likes');
+
+    //Comentarios
+    Route::post('enviar/comentarios/{id}', 'ComentariosController@guardar_comentarios');
+    Route::post('like/comentarios/{like}', 'ComentariosController@likes_comentarios');
+    Route::post('eliminar_comentario/{id}', 'ComentariosController@eliminar_comentarios');
+    // Route::post('/papper/editar_comentario/{id}', 'usuarioController@editar_comentarios');
+
+    Route::get('logout', 'usuarioController@logout');
 });
 

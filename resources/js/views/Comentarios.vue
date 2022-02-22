@@ -6,7 +6,7 @@
                     <ver-pregunta />
                 </div>
             </div>
-       </main>
+        </main>
         <crear-pregunta />
     </div>
 </template>

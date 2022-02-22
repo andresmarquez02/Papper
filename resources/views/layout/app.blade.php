@@ -1,34 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta id="token" content="{{csrf_token()}}">
     <title>Papper</title>
+    {{-- Esto esta asi por fallos en el https y http --}}
     @if (env('APP_ENV') == "production")
-    <link rel="shortcut icon" href="{{asset("Papper.png")}}">
-    <link rel="stylesheet" href="{{secure_asset('css/app.css')}}">
-    <link rel="stylesheet" href="{{secure_asset('css/papper.css')}}">
-    <link rel="stylesheet" href="{{secure_asset('alertify/themes/alertify.bootstrap-papper.css')}}">
-    <link rel="stylesheet" href="{{secure_asset('alertify/themes/alertify.core-papper.css')}}">
-    <link rel="stylesheet" href="{{secure_asset('alertify/themes/alertify.default-papper.css')}}">
-    <link rel="stylesheet" href="{{secure_asset('fontawesome-free-5.15.1-web/css/all.css')}}">
-    <link rel="stylesheet" href="{{secure_asset('fontawesome-free-5.15.1-web/css/solid.css')}}">
-    <link rel="stylesheet" href="{{secure_asset('fontawesome-free-5.15.1-web/css/v4-shims.css')}}">
-    <link rel="stylesheet" href="{{secure_asset('fontawesome-free-5.15.1-web/css/brands.css')}}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
-        @else
+        <link rel="shortcut icon" href="{{secure_asset("Papper.png")}}">
+        <link rel="stylesheet" href="{{secure_asset('css/app.css')}}">
+        <link rel="stylesheet" href="{{secure_asset('css/papper.css')}}">
+    @else
         <link rel="shortcut icon" href="{{asset("Papper.png")}}">
         <link rel="stylesheet" href="{{asset('css/app.css')}}">
         <link rel="stylesheet" href="{{asset('css/papper.css')}}">
-        <link rel="stylesheet" href="{{asset('alertify/themes/alertify.bootstrap-papper.css')}}">
-        <link rel="stylesheet" href="{{asset('alertify/themes/alertify.core-papper.css')}}">
-        <link rel="stylesheet" href="{{asset('alertify/themes/alertify.default-papper.css')}}">
-        <link rel="stylesheet" href="{{asset('fontawesome-free-5.15.1-web/css/all.css')}}">
-        <link rel="stylesheet" href="{{asset('fontawesome-free-5.15.1-web/css/solid.css')}}">
-        <link rel="stylesheet" href="{{asset('fontawesome-free-5.15.1-web/css/v4-shims.css')}}">
-        <link rel="stylesheet" href="{{asset('fontawesome-free-5.15.1-web/css/brands.css')}}">
     @endif
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito">
 </head>
-    @yield('content')
+    <body class="bg-white">
+        @yield('content')
+        {{-- Spinner de carga --}}
+        <div id="carga" class="modal-backdrop d-none bg-black-30 justify-content-center align-items-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <script src="{{asset('js/waves.js')}}"></script>
+        <script src="{{asset('alertify/lib/alertify.min.js')}}"></script>
+        <script src="{{asset('js/app.js')}}"></script>
+        @yield('script')
+    </body>
 </html>

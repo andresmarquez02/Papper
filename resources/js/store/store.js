@@ -49,9 +49,13 @@ export default new Vuex.Store({
         },
         usuarios(state,datos){
             state.usuario = datos
+            localStorage.setItem("logueado","Si");
             // console.log(datos);
         },
         get_notificaciones(state,datos){
+            let pre = document.getElementById('carga')
+            pre.classList.remove('d-flex');
+            pre.classList.add('d-none');
             state.notificaciones = datos;
         },
         get_comentarios(state,datos){
@@ -141,6 +145,9 @@ export default new Vuex.Store({
             }
         },
         async notificaciones_ver({commit,state}){
+            let pre = document.getElementById('carga')
+            pre.classList.remove('d-none');
+            pre.classList.add('d-flex');
             if(state.notificaciones == ""){
                 try{
                     const consulta = await fetch('notificaciones');
@@ -157,6 +164,9 @@ export default new Vuex.Store({
             }
         },
         async notificaciones_ver_recall({commit,state}){
+            let pre = document.getElementById('carga')
+            pre.classList.remove('d-none');
+            pre.classList.add('d-flex');
             try{
                 const consulta = await fetch('notificaciones');
                 const respuesta = await consulta.json();
@@ -166,6 +176,7 @@ export default new Vuex.Store({
                 const respuesta = await consulta.json();
                 commit('get_notificaciones',respuesta);
             }
+
         },
         async comentarios({commit,state}){
             let pre = document.getElementById('carga');
