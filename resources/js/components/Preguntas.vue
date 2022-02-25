@@ -47,7 +47,7 @@
             </div>
             <div>
                 <span>
-                    <i class="cursor-pointer fa fa-heart-o h5 waves-effect" :id="'corazon_'+preguntas.id" v-on:click="like(preguntas.id,key)"
+                    <i class="cursor-pointer fa fa-regular fa-heart h5 waves-effect" :id="'corazon_'+preguntas.id" v-on:click="like(preguntas.id,key)"
                      aria-hidden="true" like="No"></i>
                     <span class="mr-2" :id="'likes'+preguntas.id">{{preguntas.likes}}</span>
                 </span>
@@ -160,7 +160,7 @@ export default {
                 confirma.setAttribute('like','Si');
             }
             else {
-                confirma.classList = "fa fa-heart-o h5 cursor-pointer";
+                confirma.classList = "fa fa-regular fa-heart h5 cursor-pointer";
                 this.$store.state.preguntas[key].likes -=1;
                 confirma.setAttribute('like','No');
             }

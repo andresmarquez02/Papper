@@ -106,7 +106,7 @@ class PreguntasRepositori implements PreguntasInterface
             ]);
             DB::commit();
             Cache::pull('mis_preguntas');
-            return "Exito";
+            return response()->json(["exito" => "Publicacion editada con exito"],200);
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollback();
@@ -114,15 +114,23 @@ class PreguntasRepositori implements PreguntasInterface
     }
 
     public function eliminar_pregunta($id){
-        $preguntas = DB::table('preguntas')->where('id',$id)->where('id_usuario',Auth::user()->id)->count();
-        if($preguntas > 0)return response()->json([], 500);
-        Cache::pull('mis_preguntas');
-        DB::table('preguntas')->where('id',$id)->where('id_usuario',Auth::user()->id)->delete();
-        DB::table('notificaciones')->where("id_pregunta",$id)->delete();
-        DB::table('likes')->where("id_pregunta",$id)->delete();
-        DB::table('like_comentario')->where("id_pregunta",$id)->delete();
-        DB::table('comentarios')->where("id_pregunta",$id)->delete();
-        return "Exito";
+        DB::beginTransaction();
+        try {
+            $preguntas = DB::table('preguntas')->where('id',$id)->where('id_usuario',Auth::user()->id)->count();
+            if($preguntas == 0)return response()->json([], 500);
+            Cache::pull('mis_preguntas');
+            DB::table('preguntas')->where('id',$id)->where('id_usuario',Auth::user()->id)->delete();
+            DB::table('notificaciones')->where("id_pregunta",$id)->delete();
+            DB::table('likes')->where("id_pregunta",$id)->delete();
+            DB::table('like_comentario')->where("id_pregunta",$id)->delete();
+            DB::table('comentarios')->where("id_pregunta",$id)->delete();
+            DB::commit();
+            return "Exito";
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            return response()->json([], 500);
+        }
     }
 
     public function filtrado($grupo,$palabra){

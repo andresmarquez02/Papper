@@ -26,7 +26,7 @@
             </p>
             <div>
                 <span>
-                    <i class="cursor-pointer fa fa-heart-o h5" :id="'comentarios_c'+comentario.id"
+                    <i class="cursor-pointer fa fa-regular fa-heart h5" :id="'comentarios_c'+comentario.id"
                     v-on:click="like_comentario(comentario.id)"
                      aria-hidden="true" like="No"></i>
                     <span class="mr-2" :id="'likes_c'+comentario.id">{{comentario.likes}}</span>
@@ -72,7 +72,7 @@ export default {
                     }
                 }
                 ids.classList.remove('fa-heart');
-                ids.classList.add('fa-heart-o');
+                ids.classList.add('fa-regular fa-heart');
                 ids.classList.remove('text-danger');
                 document.getElementById('comentarios_c'+value).setAttribute('like','No');
             }
@@ -82,7 +82,7 @@ export default {
                         this.$store.state.commentarios[i].likes += 1;
                     }
                 }
-                ids.classList.remove('fa-heart-o');
+                ids.classList.remove('fa-regular fa-heart');
                 ids.classList.add('fa-heart');
                 ids.classList.add('text-danger');
                 document.getElementById('comentarios_c'+value).setAttribute('like','Si');
