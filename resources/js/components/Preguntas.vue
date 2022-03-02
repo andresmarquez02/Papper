@@ -10,8 +10,11 @@
                 </span>
             </div>
         </div>
-        <div class="px-4 pt-4 pb-2 my-4 bg-light-50 card-preg"  v-for="(preguntas, key) in $store.state.preguntas" v-bind:key="key">
-            <div class="m-0 row">
+        <div class="px-4 pt-4 pb-2 my-4 card-preg"  v-for="(preguntas, key) in $store.state.preguntas" v-bind:key="key">
+            <div>
+                <img src="img/wave_publicacion.svg" class="position-absolute waves-card">
+            </div>
+            <div class="m-0 row position-relative">
                 <div class="p-0 col-6">
                     <span>{{ preguntas.nombre_apellido }}</span>
                     <small class="d-block small-hora text-muted">{{preguntas.created_at}}</small>
@@ -34,7 +37,7 @@
                 </div>
             </div>
             <div>
-                <h2 class="font-weight-bold">{{ preguntas.titulo }}</h2>
+                <h2 class="font-weight-bold position-relative">{{ preguntas.titulo }}</h2>
                 <p class="mb-1">
                     <i class="fa fa-quote-left ss-small" aria-hidden="true"></i>
                     {{preguntas.descripcion}}
@@ -80,22 +83,22 @@
                         <div class="modal-body">
                             <div class="form-group">
                                 <label for="">Titulo</label>
-                                <input type="text" class="form-control" v-model="titulo_editar">
+                                <input type="text" class="form-control rounded-pill" v-model="titulo_editar">
                             </div>
                             <div class="form-group">
                                 <label for="">Grupo</label>
-                                <select class="form-control" v-model="id_grupo_editar">
+                                <select class="form-control rounded-pill" v-model="id_grupo_editar">
                                     <option v-for="grupo in $store.state.grupos" :value="grupo.id" v-bind:key="grupo.id">{{ grupo.grupo }}</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="">Descripción</label>
-                                <textarea class="form-control" v-model="descripcion_editar" rows="3"></textarea>
+                                <textarea class="rounded-md form-control" v-model="descripcion_editar" rows="3"></textarea>
                             </div>
                         </div>
-                        <div class="modal-footer d-flex justify-content-center">
-                            <button type="submit" class="btn btn-warning rounded-pill waves-effect"
-                            ><i class="fa fa-check-circle" aria-hidden="true"></i> Actualizar</button>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-text-warning rounded-pill waves-effect"
+                            >Actualizar</button>
                         </div>
                     </form>
                 </div>
@@ -106,18 +109,18 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title"></h5>
+                        <h5 class="modal-title">Eliminar Publicacion</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                     </div>
                     <div class="modal-body">
-                        <h2 class="text-center">Esta seguro de eliminar esta publicacion?</h2>
+                        <h5>Esta seguro de eliminar esta publicacion?</h5>
                     </div>
                     <div class="modal-footer">
                         <div>
-                            <button type="button" class="px-4 btn btn-secondary waves-effect" data-dismiss="modal"><i class="fa fa-times-circle" aria-hidden="true"></i> No</button>
-                            <button type="button" class="px-4 btn btn-danger waves-effect" data-dismiss="modal" v-on:click="eliminar()"><i class="fa fa-trash" aria-hidden="true"></i> Si</button>
+                            <button type="button" class="btn btn-text-dark rounded-pill waves-effect" data-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-text-danger rounded-pill waves-effect" data-dismiss="modal" v-on:click="eliminar()">Eliminar</button>
                         </div>
                     </div>
                 </div>

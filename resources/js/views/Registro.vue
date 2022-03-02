@@ -1,51 +1,45 @@
 <template>
     <div style="padding-top:4.5rem;">
-        <div class="d-flex justify-content-center align-items-center height-sm height-md">
-            <div class="bg-light-50 w-50-75 card-login rounded-xl">
-                <div class="py-2 mt-3">
-                    <h2 class="text-center font-weight-bold text-dark">
-                        <i class="fa fa-user-circle" aria-hidden="true"></i>
-                        <br>
+        <div>
+            <img src="img/wave_paper.svg" class="position-absolute" style="height:80vh;top:0;z-index:-1;">
+        </div>
+        <div class="d-flex height-md">
+            <div class="p-4 mx-auto my-auto card-login rounded-xl w-md-40 w-sm-75 w-95">
+                <div class="mt-3 form-group">
+                    <h2 class="font-weight-bold text-dark">
                         Registro
                     </h2>
                 </div>
                 <form v-on:submit.prevent="register()" autocomplete="false">
                     <div class="my-3 form-group">
-                        <div class="d-flex justify-content-center">
-                            <input type="text" maxlength="254" minlength="5" class="form-control rounded-pill w-75-90" placeholder="Usuario" v-model="nombreApellido">
-                        </div>
+                        <label>Usuario</label>
+                        <input type="text" maxlength="254" minlength="5" class="form-control rounded-pill" placeholder="papper_admin" v-model="nombreApellido">
                     </div>
                     <div class="my-3 form-group">
-                        <div class="d-flex justify-content-center">
-                            <input type="email" maxlength="254" minlength="5" class="form-control rounded-pill w-75-90" placeholder="Correo" v-model="correo">
-                        </div>
+                        <label>Correo</label>
+                        <input type="email" maxlength="254" minlength="5" class="form-control rounded-pill " placeholder="Ej:andres03marquez@gmail.com" v-model="correo">
                     </div>
                     <div class="my-3 form-group">
-                        <div class="d-flex justify-content-center">
-                            <div class="input-group w-75-90">
-                              <input :type="password" maxlength="254" minlength="5" class="form-control rounded-pill-left w-75-90" placeholder="Contraseña" v-model="contrasena" aria-label="" aria-describedby="button-addon2">
-                              <div class="input-group-append">
-                                <button class="btn btn-dark waves-effect btn-sm rounded-pill-right" v-on:click="ver_contrasena()" type="button" id="button-addon2"><i class="fa" :class="eye" aria-hidden="true"></i></button>
-                              </div>
+                        <label>Contraseña</label>
+                        <div class="input-group">
+                            <input :type="password" maxlength="254" minlength="5" class="form-control rounded-pill-left" placeholder="Contraseña" v-model="contrasena" aria-label="" aria-describedby="button-addon2">
+                            <div class="input-group-append">
+                            <button class="btn btn-text-dark waves-effect btn-sm rounded-pill-right" v-on:click="ver_contrasena()" type="button" id="button-addon2"><i class="fa" :class="eye" aria-hidden="true"></i></button>
                             </div>
                         </div>
                     </div>
                     <div class="my-3 form-group">
                         <div class="d-flex justify-content-center">
-                            <button type="submit" class="btn btn-primary waves-effect rounded-pill">
+                            <button type="submit" class="btn btn-text-primary waves-effect waves-light rounded-pill">
                                  Registrarme
                             </button>
                         </div>
                     </div>
                 </form>
-                <div class="m-0 mb-2 row">
-                    <div class="pb-3 pl-4 col-11 d-flex justify-content-end">
-                        <div>
-                            <router-link  class="text-muted small" role="button"
-                                :to="{name: 'papper_login'}">¿Ya tienes una cuenta?
-                            </router-link>
-                        </div>
-                    </div>
+                <div class="d-flex justify-content-end">
+                    <router-link  class="text-muted small" role="button"
+                        :to="{name: 'papper_login'}">¿Ya tienes una cuenta?
+                    </router-link>
                 </div>
             </div>
         </div>

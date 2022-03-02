@@ -1,42 +1,35 @@
 <template>
     <div style="padding-top:4.5rem">
-        <div class="d-flex justify-content-center align-items-center height-sm height-md" v-on:keyup.enter="ingress()">
-            <div class="py-4 card-login bg-light-50 rounded-xl w-50-75">
+        <div>
+            <img src="img/wave_paper.svg" class="position-absolute" style="height:80vh;top:0;z-index:-1;">
+        </div>
+        <div class="d-flex height-md">
+            <div class="p-4 mx-auto my-auto card-login rounded-xl w-md-40 w-sm-75 w-85">
                 <div class="mt-3 form-group">
-                    <div class="d-flex justify-content-center">
-                        <h2 class="font-weight-bold text-dark text-center">
-                            <i class="fa fa-user-circle" aria-hidden="true"></i>
-                            <br>
-                            Iniciar sesion
-                        </h2>
-                    </div>
+                    <h2 class="font-weight-bold text-dark">
+                        Login
+                    </h2>
                 </div>
                 <form v-on:submit.prevent="ingress()">
                     <div class="form-group">
-                        <div class="d-flex justify-content-center">
-                            <input type="email" name="emil" class="form-control rounded-pill w-75-90" placeholder="Correo" v-model="correo">
-                        </div>
+                        <label>Correo</label>
+                        <input type="email" name="emil" class="form-control rounded-pill" placeholder="Ej:andres03marquez@gmail.com" v-model="correo">
                     </div>
                     <div class="form-group">
-                        <div class="d-flex justify-content-center">
-                            <input type="password" name="password" class="form-control rounded-pill w-75-90" placeholder="Contraseña" v-model="contrasena">
-                        </div>
+                        <label>Contraseña</label>
+                        <input type="password" name="password" class="form-control rounded-pill" placeholder="***********" v-model="contrasena">
                     </div>
-                    <div class="form-group">
-                        <div class="d-flex justify-content-center">
-                            <button type="submit" class="btn btn-primary waves-effect rounded-pill">
-                                Ingresar
-                            </button>
-                        </div>
+                    <div class="form-group d-flex justify-content-center">
+                        <button type="submit" class="btn btn-text-primary waves-effect waves-light rounded-pill">
+                            Ingresar
+                        </button>
                     </div>
                 </form>
-                <div class="m-0 mb-2 row">
-                    <div class="col-11 d-flex justify-content-end">
-                        <div class="d-flex justify-content-end">
-                        <router-link class="text-muted small" role="button"
-                           :to="{name: 'papper_register'}">¿Aun no tienes una cuenta?</router-link>
-                        </div>
-                    </div>
+                <div class="d-flex justify-content-end">
+                    <router-link class="text-muted small" role="button"
+                   :to="{name: 'papper_register'}">
+                        ¿Aun no tienes una cuenta?
+                   </router-link>
                 </div>
             </div>
         </div>

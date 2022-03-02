@@ -11,6 +11,9 @@
             </router-link>
         </div>
         <div class="px-4 pt-4 pb-2 my-3 bg-light card-preg">
+            <div>
+                <img src="img/wave_publicacion.svg" class="position-absolute waves-card">
+            </div>
             <div class="p-0">
                 <span>{{  $store.state.pregunta.nombre_apellido }}</span>
                 <small class="d-block small-hora text-muted">{{$store.state.pregunta.created_at}}</small>

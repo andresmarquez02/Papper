@@ -23,8 +23,9 @@ class login_register extends Controller
             return response()->json(["error"=>"Las credenciales son incorrectas."], 500);
         }
     }
-    public function register(RegistroRequest $request)
-    {
+
+    public function register(RegistroRequest $request){
+
         DB::beginTransaction();
         try {
             DB::table('users')->insert([

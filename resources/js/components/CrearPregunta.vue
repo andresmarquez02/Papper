@@ -12,11 +12,11 @@
                     <div class="modal-body" v-on:keyup.Enter="publicar()">
                         <div class="form-group">
                             <label for="">Título</label>
-                            <input type="text" class="form-control" v-model="titulo" minlength="1" maxlength="254" placeholder="Alguien me puede ayudar con este codígo?">
+                            <input type="text" class="form-control rounded-pill" v-model="titulo" minlength="1" maxlength="254" placeholder="Alguien me puede ayudar con este codígo?">
                         </div>
                         <div class="form-group">
                             <label for="">Grupo</label>
-                            <select class="form-control" v-model="grupo">
+                            <select class="form-control rounded-pill" v-model="grupo">
                                 <option selected>Selecciona</option>
                                 <option v-for="grupo in $store.state.grupos" :value="grupo.id" v-bind:key="grupo.id">{{ grupo.grupo }}</option>
                             </select>
@@ -27,8 +27,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" v-on:click="publicar()" class="btn btn-primary rounded-pill waves-effect">
-                            <i class="fas fa-save "></i>
+                        <button type="button" v-on:click="publicar()" class="btn btn-text-primary rounded-pill waves-effect">
                             Guardar
                         </button>
                     </div>

@@ -17,7 +17,7 @@
     @endif
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito">
 </head>
-    <body class="bg-white">
+    <body class="bg-white" style="overflow-x:hidden">
         @yield('content')
         {{-- Spinner de carga --}}
         <div id="carga" class="modal-backdrop d-none bg-black-30 justify-content-center align-items-center">
@@ -26,7 +26,7 @@
             </div>
         </div>
         <script src="{{asset('js/waves.js')}}"></script>
-        <script src="{{asset('alertify/lib/alertify.min.js')}}"></script>
+        <script src="{{asset('alertify/alertify.js')}}"></script>
         <script src="{{asset('js/app.js')}}"></script>
         @yield('script')
     </body>

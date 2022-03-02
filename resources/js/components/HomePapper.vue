@@ -28,7 +28,7 @@
                             </router-link>
                         </li>
                         <li class="nav-item dropdown d-md-block d-none">
-                            <span class="nav-link h5" type="button" id="triggerIds" data-toggle="dropdown" aria-haspopup="true"
+                            <span class="nav-link" type="button" id="triggerIds" data-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false" v-on:click.prevent="notificaciones_generales()">
                                 <i class="fa fa-bell" aria-hidden="true"></i>&nbsp;
                                 Notificaciones
