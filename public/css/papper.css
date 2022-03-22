@@ -37,6 +37,7 @@ ul li {
 .img_home {
     position: relative;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 .list-group-item {
@@ -542,6 +543,10 @@ Proyecto: Papper*/
     color: rgb(18, 9, 27) !important;
 }
 
+.img-home img {
+    width: 100%;
+}
+
 .w-100 {
     width: 100%;
 }
@@ -746,4 +751,16 @@ Proyecto: Papper*/
 .btn-text-dark:focus,
 .btn-text-dark.focus {
     background: #5a626b;
+}
+
+.text-error {
+    background: linear-gradient(90deg, rgb(245, 12, 90) 30%, rgb(58, 10, 235));
+    background-clip: text;
+    -webkit-text-fill-color: rgba(130, 13, 240, 0.37);
+}
+
+@media (min-width:1020px) {
+    .text-error {
+        font-size: 10rem;
+    }
 }

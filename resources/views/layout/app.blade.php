@@ -22,7 +22,7 @@
         {{-- Spinner de carga --}}
         <div id="carga" class="modal-backdrop d-none bg-black-30 justify-content-center align-items-center">
             <div class="spinner-border text-primary" role="status">
-              <span class="sr-only">Loading...</span>
+              <span class="sr-only">Cargando...</span>
             </div>
         </div>
         <script src="{{asset('js/waves.js')}}"></script>
@@ -31,3 +31,4 @@
         @yield('script')
     </body>
 </html>
+

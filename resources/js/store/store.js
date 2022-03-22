@@ -6,7 +6,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        preguntas:[],
+        preguntas: [],
         usuario: null,
         grupos: [],
         likes_generales: [],
@@ -22,43 +22,43 @@ export default new Vuex.Store({
         buscador: '',
         no_encontro_nada: '',
         pregunta: '',
-        esLike:"",
+        esLike: "",
         comentario: '',
         contador: 0,
         id_pregunta: ''
     },
-    mutations:{
-        get_preguntas(state,datos){
+    mutations: {
+        get_preguntas(state, datos) {
             state.contador = 0;
             state.preguntas = datos.preguntas
             state.referencia_grupo = datos.grupo
-            if(state.preguntas == ""){
+            if (state.preguntas == "") {
                 state.no_encontro_nada = "No hay resultados...";
-            }else{
+            } else {
                 state.no_encontro_nada = "";
             }
             let pre = document.getElementById('carga');
             pre.classList.remove('d-flex');
             pre.classList.add('d-none');
             state.likes_generales = datos.likes
-            // console.log(datos);
+                // console.log(datos);
         },
-        get_grupos(state,datos){
+        get_grupos(state, datos) {
             state.grupos = datos
-            // console.log(datos);
+                // console.log(datos);
         },
-        usuarios(state,datos){
+        usuarios(state, datos) {
             state.usuario = datos
-            localStorage.setItem("logueado","Si");
+            localStorage.setItem("logueado", "Si");
             // console.log(datos);
         },
-        get_notificaciones(state,datos){
+        get_notificaciones(state, datos) {
             let pre = document.getElementById('carga')
             pre.classList.remove('d-flex');
             pre.classList.add('d-none');
             state.notificaciones = datos;
         },
-        get_comentarios(state,datos){
+        get_comentarios(state, datos) {
             state.commentarios = datos.comentarios;
             state.pregunta = datos.pregunta;
             state.esLike = datos.esLike;
@@ -70,162 +70,137 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        get_usuarios({commit}){
+        get_usuarios({ commit }) {
             fetch('users')
-            .then(data => data.json())
-            .then(data => {
-                commit('traerDatos',data);
-            })
+                .then(data => data.json())
+                .then(data => {
+                    commit('traerDatos', data);
+                })
         },
-        get_information({commit}){
+        get_information({ commit }) {
             fetch('datos')
-            .then(data => data.json())
-            .then(data => {
-                commit('datos',data);
-            })
+                .then(data => data.json())
+                .then(data => {
+                    commit('datos', data);
+                })
         },
-        async preguntas_get({commit,state}){
+        async preguntas_get({ commit, state }) {
             let token = document.querySelector('meta#token').getAttribute('content');
             let pre = document.getElementById('carga')
             pre.classList.remove('d-none');
             pre.classList.add('d-flex');
             state.nombre_filtrar = localStorage.getItem('grupo') || 0;
             try {
-                const consulta = await fetch('preguntas/'+state.nombre_filtrar,{
+                const consulta = await fetch('preguntas/' + state.nombre_filtrar, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': token
                     }
                 });
+
                 const resultado = await consulta.json();
-                // console.log(resultado);
-                commit('get_preguntas',resultado);
+                commit('get_preguntas', resultado);
             } catch (error) {
-                const consulta = await fetch('preguntas/'+state.nombre_filtrar,{
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': token
-                    }
-                });
-                const resultado = await consulta.json();
-                commit('get_preguntas',resultado);
+                alertify.error("ha ocurrido un error, porfavor recarga la pagina");
             }
         },
-        async datos_user({commit}){
+        async datos_user({ commit }) {
             let token = document.querySelector('meta#token').getAttribute('content');
-            try{
-                const consulta = await fetch('usuario',{
+            try {
+                const consulta = await fetch('usuario', {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': token
                     }
                 })
                 const respuesta = await consulta.json();
-                commit('usuarios',respuesta);
-            }catch(error){
-                const consulta = await fetch('usuario',{
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': token
-                    }
-                })
-                const respuesta = await consulta.json();
-                commit('usuarios',respuesta);
+                commit('usuarios', respuesta);
+            } catch (error) {
+                alertify.error("ha ocurrido un error, porfavor recarga la pagina");
             }
         },
-        async groups({commit}){
-            try{
+        async groups({ commit }) {
+            try {
                 const consulta = await fetch('grupos');
                 const respuesta = await consulta.json();
-                commit('get_grupos',respuesta);
-            }catch(error){
-                const consulta = await fetch('grupos');
-                const respuesta = await consulta.json();
-                commit('get_grupos',respuesta);
+                commit('get_grupos', respuesta);
+            } catch (error) {
+                alertify.error("ha ocurrido un error, porfavor recarga la pagina de grupo");
             }
         },
-        async notificaciones_ver({commit,state}){
+        async notificaciones_ver({ commit, state }) {
             let pre = document.getElementById('carga')
             pre.classList.remove('d-none');
             pre.classList.add('d-flex');
-            if(state.notificaciones == ""){
-                try{
+            if (state.notificaciones == "") {
+                try {
                     const consulta = await fetch('notificaciones');
+
                     const respuesta = await consulta.json();
-                    commit('get_notificaciones',respuesta);
-                }catch(error){
-                    const consulta = await fetch('notificaciones');
-                    const respuesta = await consulta.json();
-                    commit('get_notificaciones',respuesta);
+                    commit('get_notificaciones', respuesta);
+                } catch (error) {
+                    alertify.error("ha ocurrido un error, porfavor recarga la pagina");
                 }
-            }
-            else{
-                commit('get_notificaciones',state.notificaciones);
+            } else {
+                commit('get_notificaciones', state.notificaciones);
             }
         },
-        async notificaciones_ver_recall({commit,state}){
+        async notificaciones_ver_recall({ commit, state }) {
             let pre = document.getElementById('carga')
             pre.classList.remove('d-none');
             pre.classList.add('d-flex');
-            try{
+            try {
                 const consulta = await fetch('notificaciones');
+
                 const respuesta = await consulta.json();
-                commit('get_notificaciones',respuesta);
-            }catch(error){
-                const consulta = await fetch('notificaciones');
-                const respuesta = await consulta.json();
-                commit('get_notificaciones',respuesta);
+                commit('get_notificaciones', respuesta);
+            } catch (error) {
+                alertify.error("ha ocurrido un error, porfavor recarga la pagina");
             }
 
         },
-        async comentarios({commit,state}){
+        async comentarios({ commit, state }) {
             let pre = document.getElementById('carga');
             pre.classList.remove('d-none');
             pre.classList.add('d-flex');
             let token = document.querySelector('meta#token').getAttribute('content');
-            try{
-                const consulta = await fetch('comentarios/'+state.id_pregunta,{
+            try {
+                const consulta = await fetch('comentarios/' + state.id_pregunta, {
                     method: 'POST',
-                    headers:{
+                    headers: {
                         'X-CSRF-TOKEN': token
                     }
                 });
+
                 const respuesta = await consulta.json();
-                commit('get_comentarios',respuesta);
-            }catch(error){
-                const consulta = await fetch('comentarios/'+state.id_pregunta,{
-                    method: 'POST',
-                    headers:{
-                        'X-CSRF-TOKEN': token
-                    }
-                });
-                const respuesta = await consulta.json();
-                commit('get_comentarios',respuesta);
+                commit('get_comentarios', respuesta);
+            } catch (error) {
+                alertify.error("ha ocurrido un error, porfavor recarga la pagina");
             }
 
         },
-        async enviar_comentario({state}){
-            try{
+        async enviar_comentario({ state }) {
+            try {
                 let token = document.querySelector('meta#token').getAttribute('content');
                 let formulario = new FormData();
-                formulario.append('comentario',state.comentario);
-                const consulta = await fetch('enviar/comentarios/'+state.pregunta.id,{
+                formulario.append('comentario', state.comentario);
+                const consulta = await fetch('enviar/comentarios/' + state.pregunta.id, {
                     method: 'POST',
                     body: formulario,
-                    headers:{
+                    headers: {
                         'X-CSRF-TOKEN': token
                     }
                 });
                 const respuesta = await consulta.text();
-                if(respuesta == "1"){
+                if (respuesta == "1") {
                     this.dispatch('comentarios');
-                    alertify.success("Publlicado");
-                }
-                else{
+                    alertify.success("Publicado");
+                } else {
                     alertify.error("Error inesperado por favor vuela a enviar el comentario");
                 }
+            } catch (error) {
+                alertify.error("ha ocurrido un error, porfavor recarga la pagina");
             }
-            catch(error){}
         }
     },
 })

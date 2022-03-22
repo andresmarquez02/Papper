@@ -23,7 +23,7 @@ class usuarioController extends Controller
         if(! Cache::has('grupos')){
             Cache::forever('grupos', DB::table('grupos')->orderBy('grupo')->get());
         }
-        return response()->json(Cache::get('grupos'));
+        return response()->json(Cache::get('grupos'), 200);
     }
 
     public function notificaciones(){

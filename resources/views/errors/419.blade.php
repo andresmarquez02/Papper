@@ -9,15 +9,13 @@
     <link rel="stylesheet" href="{{asset('css/papper.css')}}">
 </head>
 <body style="overflow-x: hidden">
-    <div class="w-100 vh-100 d-flex justify-content-center align-items-center row m-0">
-        <div class="col-md-5">
-            <h1 class="display-1 font-weight-bold text-center">Pagina no Encontrads</h1>
+    <div class="w-100 vh-100 d-flex justify-content-center align-items-center">
+        <div class="w-md-85 w-95">
+            <h1 class="display-1 font-weight-bold text-center text-error">419</h1>
+            <h1 class="font-weight-bold text-center">OOPPS!! <br> Error de sesion de paginas</h1>
             <div class="d-flex justify-content-center">
-                <a class="btn btn-danger btn-lg rounded-pill shadow-sm" href="{{url('/')}}" role="button">Ir al inicio</a>
+                <a class="btn btn-primary btn-lg rounded-pill shadow-sm" href="{{url('/')}}" role="button">Ir al inicio</a>
             </div>
-        </div>
-        <div class="col-md-7">
-            <img src="{{asset('img/Error_404_SVG.svg')}}" class="w-100" style="height: 59vh;transform: rotate(347deg);" srcset="">
         </div>
     </div>
 </body>
