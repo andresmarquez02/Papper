@@ -1,24 +1,62 @@
-Hola soy Andres Maruqez, desarrolador web. 
 
-Papper es una app para preguntas y respuestas a estilo stack Overflow pero con mas areas en las que hacer preguntas por ejemplo: Medicina o Cocina.
+# Papper
 
-Pasos para instalacion de Papper en tu maquina:
+Esta es es una aplicacion al estilo de yahoo, sew trata de realizar preguntas que otros usuarios respondan 
 
-Paso 1: Descarga el proyecto de github, ejecutando git clone mas el link del repositorio
+Papper es una practica que realice hace muchos dias cuando estaba iniciando mi trabajo, esta se realizo 
+en la version de 5.4 de laravel.
 
-Paso 2: Ejecuta npm install para que se instalen todas las dependecias requeridas.
+Tecnologias que use: Laravel 5.4, Bootstrap 4 y Vue 2
 
-Paso 3: Configura tu archivo .env
 
-Paso 4: Ejecuta php artisan migrate --seed para que migres las tablas y ejecutes los seeders
+## Instalacion
 
-Y listo Papper ya estara funcionando en tu maquina.
+Para poder usar esta app o realizarle cambios primero debes seguir estos pasos.
 
-Papper es la primarea practica realizada, espero les guste.
+Paso 1: Clona el proyecto
 
-https://andresmarquez.herokuapp.com/
+```bash
+    git clone https://github.com/andresmarquez02/Papper.git
+    cd Papper
+```
 
-# Laravel
-# vue
-# bootstrap
-# mysql
+Paso 2: Instala composer
+
+```bash
+    composer install
+```
+
+Paso 3: cambia el nombre del archivo .env.example a .env
+
+Paso 4: Ejecuta en la terminal
+
+```bash
+    php artisan key:generate --show
+```
+Copia esta llave de encriptacion y pegala en las variables de entorno
+
+`APP_KEY`
+
+Paso 5: Crea una base de datos, copia el nombre y pegala en las variables de entorno
+
+`DB_DATABASE`
+
+Paso 6: Ejecuta en la terminal este comando
+
+```bash
+    php artisan migrate:fresh --seed
+```
+
+si quieres cambiar algo en el sistema en referencias en javascript puedes instalar los paquetes de node
+
+```bash
+    npm install
+```
+
+## Autor
+
+- [@andresmarquez](https://www.github.com/andresmarquez02)
+
+## 🔗 Links
+[![portafolio](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://andresmarquez02.github.io/andres/)
+[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/andres-marquez-02/)
