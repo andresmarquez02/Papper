@@ -47,10 +47,17 @@ Paso 6: Ejecuta en la terminal este comando
     php artisan migrate:fresh --seed
 ```
 
-si quieres cambiar algo en el sistema en referencias en javascript puedes instalar los paquetes de node
+Si quieres cambiar algo en el sistema en referencias en javascript puedes instalar los paquetes de node
 
 ```bash
     npm install
+```
+## Ejecucion del Sistema
+
+Para que el sistema funcione correctamente debes escribir este comando
+
+```bash
+    php artisan serve
 ```
 
 ## Autor
