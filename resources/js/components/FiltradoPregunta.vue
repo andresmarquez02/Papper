@@ -1,36 +1,47 @@
 <template>
-    <div>
-        <div>
-            <input class="form-control d-inline rounded-pill"
-             type="text" v-on:keyup.enter="buscar()" placeholder="🔎 Buscar"
-             v-model="$store.state.buscador">
+    <div class="align-items-center d-flex">
+        <div class="input-group">
+            <select
+                class="form-control rounded-pill"
+                v-model="grupo"
+            >
+                <option value="0" selected> Todos </option>
+                <option v-for="grupo in $store.state.grupos" :value="grupo.id" v-bind:key="grupo.id">{{ grupo.grupo }}</option>
+            </select>
+            <input
+                class="form-control d-inline rounded-pill ml-1"
+                type="text" v-on:keyup.enter="buscar()" placeholder="🔎 Buscar"
+                v-model="$store.state.buscador"
+            >
         </div>
     </div>
 </template>
 <script>
+    import Vuex from 'vuex';
+    import { myFetch } from '../helper/myFetch';
+
 export default {
+    data() {
+        return {
+            grupo: 0,
+        }
+    },
     methods: {
+        ...Vuex.mapMutations(["loading"]),
         async buscar(){
-            let pre = document.getElementById('carga');
-            pre.classList.remove('d-none');
-            pre.classList.add('d-flex');
-            let token = document.querySelector('meta#token').getAttribute('content');
+            this.loading(true);
             try{
-                let grupo = localStorage.getItem('grupo');
+                if(this.grupo === '')  this.grupo = 0;
+
                 if(this.$store.state.buscador !== ""){
-                    const consulta = await fetch('filtrado/'+grupo+'/'+this.$store.state.buscador,{
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': token
-                        }
-                    });
-                    const respuesta = await consulta.json();
-                    this.$store.state.preguntas = respuesta.preguntas;
+                    let response = await myFetch().get('preguntas/buscar/'+this.grupo+'/'+this.$store.state.buscador);
+                    this.$store.state.preguntas = response.res.preguntas;
                 }
             }
-            catch(error){}
-            pre.classList.remove('d-flex');
-            pre.classList.add('d-none');
+            catch(error){
+                this.$store.state.preguntas = [];
+            }
+            this.loading(false);
         }
     },
 }

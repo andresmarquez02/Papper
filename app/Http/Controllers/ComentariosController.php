@@ -7,33 +7,32 @@ use Illuminate\Http\Request;
 
 class ComentariosController extends Controller
 {
-    public $repositori = null;
+    public $interface = null;
 
-    public function __construct(ComentariosInterface $repositori){
-        $this->repositori = $repositori;
+    public function __construct(ComentariosInterface $interface){
+        $this->interface = $interface;
     }
 
-    public function likes_comentarios($datos){
-        return $this->repositori->likes_comentarios($datos);
+    public function likesComentarios($datos){
+        return $this->interface->likesComentarios($datos);
     }
 
     public function comentarios($id){
-        if(auth()->user()) return $this->repositori->comentarios($id);
-        else return $this->repositori->comentarios_init($id);
+        return $this->interface->comentarios($id);
     }
 
-    public function guardar_comentarios(Request $request,$id){
-        return $this->repositori->guardar_comentarios($request,$id);
+    public function guardarComentario(Request $request,$id){
+        return $this->interface->guardarComentario($request,$id);
     }
 
-    public function editar_comentarios(Request $request,$id){
+    public function actualizarComentario(Request $request,$id){
         $this->validate($request,[
             'comentario' => 'required|string|min:2',
         ]);
-        return $this->repositori->editar_comentarios($request,$id);
+        return $this->interface->actualizarComentario($request,$id);
     }
 
-    public function eliminar_comentarios($id){
-        return $this->repositori->eliminar_comentarios($id);
+    public function eliminarComentario($id){
+        return $this->interface->eliminarComentario($id);
     }
 }

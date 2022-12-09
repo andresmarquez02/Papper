@@ -1,139 +1,94 @@
 <template>
     <div>
-        <div class="px-4 pt-4 pb-2 my-3 bg-purble-90 card-comentari"
-        v-for="comentario in $store.state.commentarios" :key="comentario.id">
+        <div class="px-4 pt-4 pb-2 my-3 bg-purble-90 card-comentari" v-for="comentario in commentarios" :key="comentario.id">
             <div class="m-0 row">
                 <div class="p-0 col-6">
                     <span>{{  comentario.nombre_apellido }}</span>
                     <small class="d-block small-hora text-muted">{{comentario.created_at}}</small>
                 </div>
-                <div class="p-0 col-6 d-flex justify-content-end" v-if="$store.state.usuario !== null">
+                <div class="p-0 col-6 d-flex justify-content-end" v-if="usuario !== null">
                     <div class="dropdown dropleft">
                         <span class="cursor-pointer" id="triggerIdss" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">...</span>
-                        <div class="dropdown-menu dropleft" style="right:0" v-if="comentario.id_usuario == $store.state.usuario.id" aria-labelledby="triggerIdss">
-                            <h6 class="cursor-pointer dropdown-item" v-on:click="denunciar()">Denunciar</h6>
+                        <div class="dropdown-menu dropleft" style="right:0" v-if="comentario.id_usuario == usuario.id" aria-labelledby="triggerIdss">
                             <h6 class="cursor-pointer dropdown-item" v-on:click="modal_elimiar(comentario.id)"
                              data-toggle="modal" data-target="#modelEliminarc">Eliminar</h6>
-                        </div>
-                        <div class="dropdown-menu" v-else aria-labelledby="triggerIdss">
-                            <h6 class="cursor-pointer dropdown-item" v-on:click="denunciar()">Denunciar</h6>
                         </div>
                     </div>
                 </div>
             </div>
-            <p class="comment"> {{comentario.comentario}}
-            </p>
+            <p class="comment" v-html="comentario.comentario"></p>
             <div>
                 <span>
-                    <i class="cursor-pointer fa fa-regular fa-heart h5" :id="'comentarios_c'+comentario.id"
-                    v-on:click="like_comentario(comentario.id)"
-                     aria-hidden="true" like="No"></i>
+                    <i
+                        class="cursor-pointer fa fa-regular fa-heart h5"
+                        :id="'comentario_like'+comentario.id"
+                        v-on:click="like_comentario($event,comentario.id)"
+                        aria-hidden="true"
+                        like="false"
+                    >
+                    </i>
                     <span class="mr-2" :id="'likes_c'+comentario.id">{{comentario.likes}}</span>
                 </span>
             </div>
         </div>
-        <div class="modal" id="modelEliminarc" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"></h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                    </div>
-                    <div class="modal-body">
-                        <h2>Esta seguro de eliminar este comentario?</h2>
-                    </div>
-                    <div class="modal-footer d-flex justify-content-center">
-                        <div>
-                            <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal"><i class="fa fa-times-circle" aria-hidden="true"></i> No</button>
-                            <button type="button" class="btn btn-dange waves-effectr" data-dismiss="modal" v-on:click="eliminar()"><i class="fa fa-trash" aria-hidden="true"></i> Si</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <eliminarComentario :idComentario="idComentario"/>
     </div>
 </template>
 <script>
-export default {
-    methods: {
-        async like_comentario(value){
-            if(this.$store.state.usuario == null) return location.hash = "/login";
+    import Vuex from "vuex";
+    import { myFetch } from '../helper/myFetch';
+    export default {
+        data() {
+            return {
+                idComentario: 0,
+            }
+        },
+        methods: {
+            async like_comentario(event,value){
+                // Si el usuario no esta logueado lo redirige al login
+                if(this.usuario == null) {
+                    return location.hash = "/login";
+                }
 
-            let token = document.querySelector('meta#token').getAttribute('content');
-            let ids = document.getElementById('comentarios_c'+value);
-            let confirma = document.getElementById('comentarios_c'+value).getAttribute('like');
-            if(confirma === "Si"){
-                for(var i = 0; i < this.$store.state.commentarios.length; i++){
-                    if(this.$store.state.commentarios[i].id == value){
-                        this.$store.state.commentarios[i].likes -= 1;
-                    }
-                }
-                ids.classList.remove('fa-heart');
-                ids.classList.add('fa-regular fa-heart');
-                ids.classList.remove('text-danger');
-                document.getElementById('comentarios_c'+value).setAttribute('like','No');
-            }
-            else {
-                for(var i = 0; i < this.$store.state.commentarios.length; i++){
-                    if(this.$store.state.commentarios[i].id == value){
-                        this.$store.state.commentarios[i].likes += 1;
-                    }
-                }
-                ids.classList.remove('fa-regular fa-heart');
-                ids.classList.add('fa-heart');
-                ids.classList.add('text-danger');
-                document.getElementById('comentarios_c'+value).setAttribute('like','Si');
-            }
-            await fetch('like/comentarios/'+value,{
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': token
-                }
-            });
-        },
-        modal_elimiar(id){
-            this.id_comentario = id;
-        },
-        async eliminar(){
-            let pre = document.getElementById('carga');
-            pre.classList.remove('d-none');
-            pre.classList.add('d-flex');
-            let token = document.querySelector('meta#token').getAttribute('content');
-            alertify.success("Procesando...");
-            try{
-                const consulta = await fetch('eliminar_comentario/'+this.id_comentario,{
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': token
-                    }
-                });
-                const resultado = await consulta.json();
-                pre.classList.remove('d-flex');
-                pre.classList.add('d-none');
-                if(consulta.status == 200){
-                    for(var i = 0; i < this.$store.state.commentarios.length; i++){
-                        if(this.$store.state.commentarios[i].id == this.id_comentario){
-                            this.$store.state.commentarios.splice(i,1);
-                        }
-                    }
-                    alertify.success(resultado.exito);
+                let { like } = event.target.attributes;
+                //Condicional para que se pinte el corazon de tojo o se quite el like
+                if(like.nodeValue === "true"){
+                    // LLamado de la funcion para que haga la suma o resta para no repetir tanto codigo, se le pasa un true o false para saber que va a hacer, una suma o una resta
+                    this.likeDislike(value,true)
+                    // Agregado de clases
+                    event.target.className = "cursor-pointer fa-regular fa fa-heart h5";
+                    like.nodeValue = false;
                 }
                 else{
-                    throw([resultado,consulta]);
+                    // LLamado de la funcion para que haga la suma o resta para no repetir tanto codigo, se le pasa un true o false para saber que va a hacer, una suma o una resta
+                    this.likeDislike(value,false)
+                    // Agregado de clases
+                    event.target.className = "cursor-pointer text-danger fa fa-heart h5";
+                    like.nodeValue = true;
                 }
-            }
-            catch(error){
-                alertify.error(resultado[0].error);
-            }
+                // Fetch para que se guarde en la bd
+                await myFetch().post('like/comentarios/'+value,{});
+
+            },
+            // Funcion para suma o resta de like
+            likeDislike(value,type){
+                // Array de los comentarios
+                this.commentarios.find(element => {
+                    if(element.id == value){
+                        if(type)
+                            return element.likes -= 1;
+                        else
+                            return element.likes += 1;
+                    }
+                });
+            },
+            modal_elimiar(id){
+                this.idComentario = id;
+            },
         },
-        denunciar(){
-            setTimeout(()=>{
-                alertify.success("Comentario denunciado");
-            },1200);
-        }
+        computed: {
+            ...Vuex.mapState(['usuario','commentarios']),
+        },
     }
-}
 </script>

@@ -1,7 +1,7 @@
 @extends('layout.app')
 @section('content')
     <div id="app">
-        <papper-home />
+        <papper />
     </div>
 @endsection
 @section('script')

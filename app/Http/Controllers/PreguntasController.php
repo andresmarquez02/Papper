@@ -9,39 +9,45 @@ use Illuminate\Http\Request;
 
 class PreguntasController extends Controller
 {
-    public $repositori = null;
+    public $interface = null;
 
-    public function __construct(PreguntasInterface $repositori){
-        $this->repositori = $repositori;
+    public function __construct(PreguntasInterface $preguntasInterface){
+        $this->interface = $preguntasInterface;
     }
 
-    public function index(){
-        return view('papper.home');
+    public function preguntas(){
+        return $this->interface->preguntas();
     }
 
-    public function preguntas($grupo){
-
-        if(auth()->user()) return $this->repositori->preguntas($grupo);
-        else return $this->repositori->index($grupo);
+    public function preguntasPopulares(){
+        return $this->interface->preguntasPopulares();
     }
 
-    public function store(preguntaRequest $request){
-        return $this->repositori->store($request);
+    public function preguntasRecomendadas(){
+        return $this->interface->preguntasRecomendadas();
     }
 
-    public function editar_pregunta(EditPregRequest $request,$id){
-       return $this->repositori->editar_pregunta($request,$id);
+    public function preguntasPorGrupo($grupo){
+        return $this->interface->preguntasPorGrupo($grupo);
     }
 
-    public function eliminar_pregunta($id){
-        return $this->repositori->eliminar_pregunta($id);
+    public function buscarPreguntas($grupo,$palabra){
+        return $this->interface->buscarPreguntas($grupo,$palabra);
     }
 
-    public function filtrado($grupo,$palabra){
-        return $this->repositori->filtrado($grupo,$palabra);
+    public function crearPregunta(preguntaRequest $request){
+        return $this->interface->crearPregunta($request);
     }
 
-    public function likes($id_pregunta){
-        return $this->repositori->likes($id_pregunta);
+    public function actualizarPregunta(EditPregRequest $request,$id){
+       return $this->interface->actualizarPregunta($request,$id);
+    }
+
+    public function eliminarPregunta($id){
+        return $this->interface->eliminarPregunta($id);
+    }
+
+    public function likes($idPregunta){
+        return $this->interface->likes($idPregunta);
     }
 }

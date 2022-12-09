@@ -1,43 +1,80 @@
 <template>
-    <div class="col-md-3 col-sm-12" style="word-break:break-all">
-        <ul class="pt-4 pr-0 my-3 list-group position-fixed-md col-lg-3">
-            <li class="p-0 mb-5 list-group-item no-hover">
-                <filtrado-pregunta/>
-            </li>
-            <li class="list-group-item waves-effect" v-on:click="por_grupo(0)">Todos</li>
-            <li class="list-group-item waves-effect" v-on:click="por_grupo(-1)">Populares</li>
-            <li class="list-group-item waves-effect" v-on:click="por_grupo(7)">Recomendado</li>
-            <li class="list-group-item dropdown">
-                <div class="dropdown-toggle" id="dropdownId" data-toggle="dropdown"
-                 aria-haspopup="true" aria-expanded="false">Grupo</div>
-                    <div class="bg-white dropdown-menu dropright w-100" style="min-width:11rem;max-height:14rem;overflow-y:auto"
-                    aria-labelledby="dropdownId">
-                    <span class="p-1 dropdown-item" v-bind:key="grupo.id" v-for="grupo in $store.state.grupos" v-on:click="por_grupo(grupo.id)">
-                        {{ grupo.grupo }}
+    <div style="word-break:break-all">
+        <div class="list-group">
+            <span class="p-0 mb-2 list-group-item list-group-item-action no-hover">
+                <h2 class="text-center text-dark mb-0">
+                    <img src="img/logo.png" style="height:4rem" alt="">
+                </h2>
+            </span>
+            <span v-on:click="setShowNav">
+                <router-link class="list-group-item list-group-item-action waves-effect" to="/">
+                    <i class="fa fa-home mr-2" aria-hidden="true"></i>
+                    {{ usuario ? 'Inicio' : 'Todos' }}
+                </router-link>
+            </span>
+            <template v-if="usuario">
+                <span v-on:click="setShowNav">
+                    <span class="list-group-item list-group-item-action waves-effect" data-toggle="modal" data-target="#modelId">
+                        <i class="fa fa-plus-circle mr-2" aria-hidden="true"></i>
+                        Crear Publicación
                     </span>
-                    <span class="p-1 dropdown-item" v-on:click="por_grupo(0)">
-                    Todo
-                    </span>
+                </span>
+                <span v-on:click="setShowNav">
+                    <router-link class="list-group-item list-group-item-action waves-effect" :to="{name: 'perfil'}">
+                        <i class="fa fa-user-circle" aria-hidden="true"></i> &nbsp;
+                        Perfil
+                    </router-link>
+                </span>
+                <span v-on:click="setShowNav">
+                    <router-link class="list-group-item list-group-item-action waves-effect" :to="{name: 'notificaciones'}">
+                        <i class="fa fa-bell mr-2" aria-hidden="true"></i>&nbsp;
+                        Notificaciones
+                    </router-link>
+                </span>
+            </template>
+            <span v-on:click="setShowNav">
+                <router-link class="list-group-item list-group-item-action waves-effect" to="/populares">
+                    <i class="fa fa-bullhorn mr-2" aria-hidden="true"></i>
+                    Populares
+                </router-link>
+            </span>
+            <span v-on:click="setShowNav">
+                <router-link class="list-group-item list-group-item-action waves-effect" to="/recomendado">
+                    <i class="fa fa-check-circle mr-2" aria-hidden="true"></i>
+                    Recomendado
+                </router-link>
+            </span>
+            <div id="accordianId" role="tablist" aria-multiselectable="true">
+                <div>
+                    <div role="tab" id="section1HeaderId">
+                        <h5 class="mb-0">
+                            <a data-toggle="collapse" data-parent="#accordianId" href="#section1ContentId" aria-expanded="true" aria-controls="section1ContentId" class="list-group-item list-group-item-action waves-effect">
+                                <i class="fa fa-check-circle mr-2" aria-hidden="true"></i>
+                                Grupo
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="section1ContentId" class="collapse in" role="tabpanel" aria-labelledby="section1HeaderId">
+                        <span v-on:click="setShowNav" v-bind:key="grupo.id" v-for="grupo in grupos">
+                            <router-link class="d-block px-4 py-1 text-muted"
+                            :to="'../grupo/'+grupo.id" v-on:click="setShowNav">
+                                {{ grupo.grupo }}
+                            </router-link>
+                        </span>
+                    </div>
                 </div>
-            </li>
-        </ul>
+            </div>
+        </div>
     </div>
 </template>
-<script>
-export default {
-    methods: {
-        por_grupo(value){
-            if(value == '-2'){
-                this.inicio = "";
-                this.perfil= "active";
-            }
-            else{
-                this.inicio = "active";
-                this.perfil= "";
-            }
-            localStorage.setItem('grupo',value)
-            this.$store.dispatch('preguntas_get');
+<script lang="js">
+    import Vuex from "vuex";
+    export default {
+        computed: {
+            ...Vuex.mapState(['usuario', 'grupos']),
         },
-    },
-}
+        methods: {
+            ...Vuex.mapMutations(['setShowNav']),
+        },
+    }
 </script>

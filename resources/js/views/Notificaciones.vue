@@ -19,17 +19,17 @@
     </div>
 </template>
 <script>
-export default {
-    mounted(){
-        this.notificaciones_generales();
-    },
-    methods:{
-        notificaciones_generales(){
-            this.$store.dispatch('notificaciones_ver');
+    export default {
+        mounted(){
+            this.notificaciones_generales();
         },
-        notificaciones_recall(){
-            this.$store.dispatch('notificaciones_ver_recall');
-        },
+        methods:{
+            notificaciones_generales(){
+                this.$store.dispatch('notificaciones_ver');
+            },
+            notificaciones_recall(){
+                this.$store.dispatch('notificaciones_ver_recall');
+            },
+        }
     }
-}
 </script>

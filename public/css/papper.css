@@ -9,7 +9,7 @@ Proyecto: Papper*/
     /* #7b062f */
     /* #fb9396 */
     /* #eca0bc */
-    --primary-color: #8a51d4;
+    --primary-color: 138, 81, 212;
     --primary-color-hover: #8758c5;
     --shadow-primary-color: #cf9dffb2;
     --secondary-color: #1895cf;
@@ -53,17 +53,17 @@ ul li {
 }
 
 .bg-purple {
-    background-color: var(--primary-color) !important;
+    background-color: rgb(var(--primary-color)) !important;
 }
 
 .bg-purple-blue {
     transition: .6s background-color ease-in-out;
-    background-color: var(--primary-color) !important;
+    background-color: rgb(var(--primary-color)) !important;
 }
 
 .bg-purple-blue-2 {
     transition: .6s background-color ease-in-out;
-    background-color: var(--primary-color) !important;
+    background-color: rgb(var(--primary-color)) !important;
 }
 
 .top {
@@ -112,14 +112,8 @@ ul li {
 }
 
 .list-group-item:hover {
-    color: var(--white) !important;
-    background-color: var(--primary-color) !important;
+    background-color: rgba(var(--primary-color), 0.15) !important;
     cursor: pointer;
-    transition: background-color .3s ease-in-out;
-    -webkit-transition: background-color .3s ease-in-out;
-    -moz-transition: background-color .3s ease-in-out;
-    -ms-transition: background-color .3s ease-in-out;
-    -o-transition: background-color .3s ease-in-out;
 }
 
 .shadow-bottom {
@@ -138,7 +132,7 @@ ul li {
     z-index: 2;
     color: var(--white);
     text-decoration: none;
-    background-image: linear-gradient(90deg, var(--primary-color), var(--primary-white));
+    background-image: linear-gradient(90deg, rgb(var(--primary-color)), var(--primary-white));
     border-color: transparent;
 }
 
@@ -192,7 +186,7 @@ ul li {
     width: 7rem;
     height: 7rem;
     vertical-align: text-bottom;
-    border: .5em solid var(--primary-color);
+    border: .5em solid rgb(var(--primary-color));
     border-right-color: transparent;
     border-radius: 50%;
     -webkit-animation: spinner-border .75s linear infinite;
@@ -276,7 +270,7 @@ ul li {
 }
 
 .router-link-exact-active {
-    color: #fff !important;
+    color: rgb(var(--primary-color)) !important;
 }
 
 .list-group-item {
@@ -309,8 +303,8 @@ ul li {
 
 .btn-primary {
     color: #fff;
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: rgb(var(--primary-color));
+    border-color: rgb(var(--primary-color));
 }
 
 .btn-primary:hover {
@@ -335,8 +329,8 @@ Proyecto: Papper*/
 .btn-primary.disabled,
 .btn-primary:disabled {
     color: #fff;
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: rgb(var(--primary-color));
+    border-color: rgb(var(--primary-color));
 }
 
 .btn-primary:not(:disabled):not(.disabled):active,
@@ -484,7 +478,7 @@ Proyecto: Papper*/
 }
 
 .card-comentari {
-    box-shadow: inset 0px 0px 20px -16px var(--primary-color), 1px 12px 14px -16px #b5abab;
+    box-shadow: inset 0px 0px 20px -16px rgb(var(--primary-color)), 1px 12px 14px -16px #b5abab;
     border-radius: .4rem;
 }
 
@@ -521,7 +515,7 @@ Proyecto: Papper*/
 }
 
 .dropdown-item:active {
-    background-color: var(--primary-color);
+    background-color: rgb(var(--primary-color));
     color: white !important;
 }
 
@@ -548,88 +542,128 @@ Proyecto: Papper*/
 }
 
 .w-100 {
-    width: 100%;
+    width: 100% !important;
+}
+
+.w-90 {
+    width: 90% !important;
 }
 
 .w-95 {
-    width: 95%;
+    width: 95% !important;
 }
 
 .w-85 {
-    width: 85%;
+    width: 85% !important;
 }
 
 .w-75 {
-    width: 75%;
+    width: 75% !important;
 }
 
 .w-65 {
-    width: 65%;
+    width: 65% !important;
 }
 
 .w-60 {
-    width: 60%;
+    width: 60% !important;
 }
 
 .w-50 {
-    width: 50%;
+    width: 50% !important;
 }
 
 .w-40 {
-    width: 40%;
+    width: 40% !important;
 }
 
 @media (min-width: 553px) {
     .w-sm-100 {
-        width: 100%;
+        width: 100% !important;
+    }
+    .w-sm-90 {
+        width: 90% !important;
     }
     .w-sm-95 {
-        width: 95%;
+        width: 95% !important;
     }
     .w-sm-85 {
-        width: 85%;
+        width: 85% !important;
     }
     .w-sm-75 {
-        width: 75%;
+        width: 75% !important;
     }
     .w-sm-65 {
-        width: 65%;
+        width: 65% !important;
     }
     .w-sm-60 {
-        width: 60%;
+        width: 60% !important;
     }
     .w-sm-50 {
-        width: 50%;
+        width: 50% !important;
     }
     .w-sm-40 {
-        width: 40%;
+        width: 40% !important;
     }
 }
 
 @media (min-width: 768px) {
     .w-md-100 {
-        width: 100%;
+        width: 100% !important;
+    }
+    .w-md-90 {
+        width: 90% !important;
     }
     .w-md-95 {
-        width: 95%;
+        width: 95% !important;
     }
     .w-md-85 {
-        width: 85%;
+        width: 85% !important;
     }
     .w-md-75 {
-        width: 75%;
+        width: 75% !important;
     }
     .w-md-65 {
-        width: 65%;
+        width: 65% !important;
     }
     .w-md-60 {
-        width: 60%;
+        width: 60% !important;
     }
     .w-md-50 {
-        width: 50%;
+        width: 50% !important;
     }
     .w-md-40 {
-        width: 40%;
+        width: 40% !important;
+    }
+}
+
+@media (min-width: 1040px) {
+    .w-lg-100 {
+        width: 100% !important;
+    }
+    .w-lg-95 {
+        width: 95% !important;
+    }
+    .w-lg-90 {
+        width: 90% !important;
+    }
+    .w-lg-85 {
+        width: 85% !important;
+    }
+    .w-lg-75 {
+        width: 75% !important;
+    }
+    .w-lg-65 {
+        width: 65% !important;
+    }
+    .w-lg-60 {
+        width: 60% !important;
+    }
+    .w-lg-50 {
+        width: 50% !important;
+    }
+    .w-lg-40 {
+        width: 40% !important;
     }
 }
 
@@ -650,11 +684,11 @@ Proyecto: Papper*/
     font-weight: 600 !important;
     border: 0;
     box-shadow: 0 0 0 0 transparent;
-    color: var(--primary-color);
+    color: rgb(var(--primary-color));
 }
 
 .btn-text-primary:hover {
-    color: var(--primary-color);
+    color: rgb(var(--primary-color));
     background: #dabdff;
 }
 
@@ -763,4 +797,78 @@ Proyecto: Papper*/
     .text-error {
         font-size: 10rem;
     }
+}
+
+.content-body {
+    flex: 1 1 auto;
+}
+
+.asidebar {
+    top: 0;
+    bottom: 0;
+    left: -16.25rem;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    width: 16.25rem;
+    box-shadow: 0 .145rem .475rem 0 rgba(161, 172, 184, 0.21);
+    z-index: 10;
+}
+
+.asidebar:not(.showNav) {
+    transition: all .3s ease-in-out;
+    -webkit-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+    -ms-transition: all .3s ease-in-out;
+    -o-transition: all .3s ease-in-out;
+}
+
+.showNav {
+    left: 0;
+    transition: all .3s ease-in-out;
+    -webkit-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+    -ms-transition: all .3s ease-in-out;
+    -o-transition: all .3s ease-in-out;
+}
+
+@media (min-width: 840px) {
+    .content-body {
+        padding-left: 16rem;
+    }
+    .asidebar {
+        left: 0;
+    }
+    .button-asidenav {
+        display: none !important;
+    }
+}
+
+a {
+    color: #172533;
+}
+
+.nav-link:hover {
+    color: rgb(var(--primary-color));
+}
+
+.dropdown-menu .router-link-active {
+    background-color: rgb(var(--primary-color));
+    color: var(--white) !important
+}
+
+:root {
+    --bs-body-bg-rgb: 255, 255, 255;
+    --bs-primary-rgb: 51, 133, 255;
+    --bd-violet-rgb: 135, 88, 197;
+    --bd-accent-rgb: 255, 100, 151;
+    --bd-pink-rgb: 214, 51, 151;
+    --bd-yellow-rgb: 255, 225, 116;
+}
+
+.bg-font {
+    background-image: radial-gradient(ellipse at top left, rgba(var(--bs-primary-rgb), 0.5), transparent 50%), radial-gradient(ellipse at top right, rgba(var(--bd-accent-rgb), 0.5), transparent 50%), radial-gradient(ellipse at center right, rgba(var(--bd-violet-rgb), 0.5), transparent 50%), radial-gradient(ellipse at center left, rgba(var(--bd-yellow-rgb), 0.5), transparent 50%);
+}
+
+.nav-link {
+    padding: 0.4rem .75rem;
 }

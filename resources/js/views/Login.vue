@@ -1,103 +1,155 @@
 <template>
-    <div style="padding-top:4.5rem">
-        <div>
-            <img src="img/wave_paper.svg" class="position-absolute" style="height:80vh;top:0;z-index:-1;">
-        </div>
-        <div class="d-flex height-md">
-            <div class="p-4 mx-auto my-auto card-login rounded-xl w-md-40 w-sm-75 w-85">
+    <div>
+        <div class="d-flex min-vh-100 bg-font">
+            <div class="p-4 mx-auto my-auto card-login rounded-xl w-lg-50 w-md-60 w-sm-75 w-95">
                 <div class="mt-3 form-group">
-                    <h2 class="font-weight-bold text-dark">
+                    <h2 class="mb-1 text-center font-weight-bold text-dark">
                         Login
                     </h2>
+                    <div class="mb-3 text-center text-muted h4">Ingresa a Papper</div>
                 </div>
-                <form v-on:submit.prevent="ingress()">
-                    <div class="form-group">
-                        <label>Correo</label>
-                        <input type="email" name="emil" class="form-control rounded-pill" placeholder="Ej:andres03marquez@gmail.com" v-model="correo">
+                <form v-on:submit.prevent="login($event)">
+                    <div class="mb-2 form-group">
+                        <label class="mb-0 ml-2 small">Correo</label>
+                        <input type="email"
+                            maxlength="254"
+                            minlength="5"
+                            class="form-control rounded-pill "
+                            :class="{
+                                'is-invalid': submitted && $v.usuario.correo.$error
+                            }"
+                            placeholder="Ej:andres03marquez@gmail.com"
+                            name="correo"
+                            v-model="usuario.correo"
+                        >
+                        <div
+                            v-if="submitted && !$v.usuario.correo.required"
+                            class="invalid-feedback"
+                        >
+                            El correo es requerido
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Contraseña</label>
-                        <input type="password" name="password" class="form-control rounded-pill" placeholder="***********" v-model="contrasena">
+                    <div class="mb-2 form-group">
+                        <label class="mb-0 ml-2 small">Contraseña</label>
+                        <div class="input-group">
+                            <input :type="password"
+                                maxlength="254"
+                                minlength="5"
+                                class="form-control rounded-pill-left"
+                                :class="{
+                                    'is-invalid': submitted && $v.usuario.contrasena.$error
+                                }"
+                                placeholder="******"
+                                name="contrasena"
+                                aria-label=""
+                                aria-describedby="button-addon2"
+                                v-model="usuario.contrasena"
+                            >
+                            <div class="input-group-append">
+                            <button class="btn btn-text-dark waves-effect btn-sm rounded-pill-right" v-on:click="verContrasena()" type="button" id="button-addon2"><i class="fa" :class="eye" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+                        <div
+                            v-if="submitted && !$v.usuario.contrasena.required"
+                            class="invalid-feedback"
+                        >
+                            La contraseña es requerida
+                        </div>
                     </div>
-                    <div class="form-group d-flex justify-content-center">
-                        <button type="submit" class="btn btn-text-primary waves-effect waves-light rounded-pill">
+                    <div class="form-group d-flex justify-content-center mt-2">
+                        <button type="submit" class="btn btn-text-primary w-100 waves-effect waves-light rounded-pill">
                             Ingresar
                         </button>
                     </div>
                 </form>
-                <div class="d-flex justify-content-end">
-                    <router-link class="text-muted small" role="button"
-                   :to="{name: 'papper_register'}">
-                        ¿Aun no tienes una cuenta?
-                   </router-link>
+                 <!-- Link para ir a registro  -->
+                <div class="pb-3 pr-3 d-flex justify-content-end">
+                    <router-link  class="text-muted small" role="button"
+                        :to="{name: 'papper_register'}">¿Aun no tienes una cuenta?
+                    </router-link>
                 </div>
             </div>
         </div>
     </div>
 </template>
 <script>
-export default {
-    mounted(){
-        localStorage.setItem("grupo",0);
-    },
-    data(){
-        return {
-            correo: '',
-            contrasena: ''
-        }
-    },
-    methods: {
-        async ingress(){
-            const regular = {
-                correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/,
-                contrasenna: /^.{1,400}$/,
-            };
-            if(regular.correo.test(this.correo) && this.contrasena !== ""){
+    import Vuex from 'vuex'
+    import { myFetch } from '../helper/myFetch';
+    import { required, email, minLength } from "vuelidate/lib/validators";
 
-                let carga = document.querySelector("#carga");
-                carga.classList.remove("d-none");
-                carga.classList.add("d-flex");
-
-                let formulario = new FormData();
-                formulario.append('correo',this.correo);
-                formulario.append('contrasena',this.contrasena);
-
+    export default {
+        data() {
+            return {
+                usuario: {
+                    correo: 'andresprueba@gmail.com',
+                    contrasena: '123123'
+                },
+                password: 'password',
+                eye: "fa-eye",
+                submitted: false,
+            }
+        },
+        validations: {
+            usuario: {
+                correo: { required, email },
+                contrasena: { required, minLength: minLength(6) },
+            }
+        },
+        methods: {
+            // Mapeo de la mutacion loading para el preload
+            ...Vuex.mapMutations(["loading"]),
+            verContrasena(){
+                if(this.password == 'password'){
+                    this.eye = "fa-eye-slash";
+                    this.password = 'text';
+                }
+                else{
+                    this.eye = "fa-eye";
+                    this.password = 'password';
+                }
+            },
+            async login(event){
+                this.submitted = true;
+                this.$v.$touch();
+                if (this.$v.$invalid) {
+                    alertify.error("Debe llenar todos los campos correctamente");
+                    return;
+                }
                 try {
-                    const consulta = await fetch('login',{
-                        method: 'POST',
-                        body: formulario,
-                        headers: {
-                            'X-CSRF-TOKEN': this.$store.state.token,
-                            'Accept': 'application/json'
+                    // Activacion del loading (Funcion que se encuentra en el store)
+                    this.loading(true);
+
+                    //Hacemos un envio de datos mediante la libreria que se creo.
+                    const response = await myFetch().post("login",{body:this.usuario});
+
+                    // validacion de respuesta
+                    if(response.status !== 200){
+                        // Paso a catch para mostrar el error
+                        throw(response.res);
+                    } else {
+                        // Paso del loadign a false
+                        this.loading(false);
+                        // Respuesta exitosa
+                        this.usuario = {
+                            correo: "",
+                            contrasena: "",
                         }
-                    });
-                    const respuesta = await consulta.json();
-                    if(consulta.status !== 200)
-                        throw([respuesta,consulta.status]);
-                    if(consulta.status === 200){
                         localStorage.setItem("logueado","Si");
-                        alertify.success("Entrando...");
-                        location.href = "./home";
+                        this.$router.push({ name: 'principal' });
+                        alertify.success(response.res.exito);
                     }
                 } catch (errors) {
-                    carga.classList.remove("d-flex");
-                    carga.classList.add("d-none");
-                    if(errors[1] == 422){
-                        if(errors[0].errors.correo)
-                            return alertify.error(errors[0].errors.correo);
-                        if(errors[0].errors.contrasena)
-                            return alertify.error(errors[0].errors.contrasena);
-                    }
-                    else if(errors[1] == 500){
-                        if(errors[0].error)
-                            alertify.error(errors[0].error);
-                    }
+                    // Paso del loadign a false
+                    this.loading(false);
+
+                    // Muestra del error
+                    let { correo, contrasena, err } = errors.errors;
+
+                    if(correo !== undefined) return alertify.error(correo[0]);
+                    if(contrasena !== undefined) return alertify.error(contrasena[0]);
+                    if(err !== undefined) return alertify.error(err[0]);
                 }
             }
-            else{
-                alertify.error("Rellena los campos con datos validos");
-            }
-        }
-    },
-}
+        },
+    }
 </script>

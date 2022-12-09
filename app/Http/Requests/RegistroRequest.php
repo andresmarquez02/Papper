@@ -29,21 +29,4 @@ class RegistroRequest extends FormRequest
             'contrasena' => 'required|min:5|max:254'
         ];
     }
-    public function messages()
-    {
-        return [
-            "usuario.required" => "El usuario es requerido",
-            "usuario.min" => "El usuario debe tener minimo 5 caracteres",
-            "usuario.max" => "Usuario muy extenso",
-            "usuario.unique" => "Este nombre de usuario ya existe",
-            "correo.require" => "El correo es requerido",
-            "correo.email" => "El correo no es valido",
-            "correo.min" => "El correo debe tener minimo 5 caracteres",
-            "correo.max" => "Correo electronico muy extenso",
-            "correo.unique" => "Este correo ya existe",
-            "contrasena.required" => "La contraseña es requerida",
-            "contrasena.min" => "La contraseña debe tener minimo 5 caracteres",
-            "contrasena.max" => "Contraseña muy extensa, es propenso que despues no la recuerde",
-        ];
-    }
 }

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
+import { myFetch } from '../helper/myFetch';
 
 Vue.use(Vuex);
 
@@ -25,23 +25,17 @@ export default new Vuex.Store({
         esLike: "",
         comentario: '',
         contador: 0,
-        id_pregunta: ''
+        id_pregunta: '',
+        showNav: '',
     },
     mutations: {
-        get_preguntas(state, datos) {
+        setPreguntas(state, datos) {
+            let { preguntas } = datos.res;
             state.contador = 0;
-            state.preguntas = datos.preguntas
-            state.referencia_grupo = datos.grupo
+            state.preguntas = preguntas
             if (state.preguntas == "") {
                 state.no_encontro_nada = "No hay resultados...";
-            } else {
-                state.no_encontro_nada = "";
             }
-            let pre = document.getElementById('carga');
-            pre.classList.remove('d-flex');
-            pre.classList.add('d-none');
-            state.likes_generales = datos.likes
-                // console.log(datos);
         },
         get_grupos(state, datos) {
             state.grupos = datos
@@ -67,6 +61,41 @@ export default new Vuex.Store({
             let pre = document.getElementById('carga')
             pre.classList.remove('d-flex');
             pre.classList.add('d-none');
+        },
+        setToken(state, token) {
+            state.token = token;
+        },
+        setShowNav(state) {
+            window.onresize = function() {
+                if (document.querySelector('body').clientWidth <= 840) {
+                    if (state.showNav) {
+                        return state.showNav = "";
+                    }
+                    state.showNav = "showNav";
+                }
+            }
+            if (document.querySelector('body').clientWidth <= 840) {
+                if (state.showNav) {
+                    return state.showNav = "";
+                }
+                state.showNav = "showNav";
+            }
+        },
+        loading(state, type) {
+            // Selector de carga
+            let carga = document.querySelector("#carga");
+
+            if (type) {
+                // Poner el loading en marcha
+                carga.classList.remove("d-none");
+                carga.classList.add("d-flex");
+
+            } else {
+                // Quitar el loading
+                carga.classList.remove("d-flex");
+                carga.classList.add("d-none");
+
+            }
         }
     },
     actions: {
@@ -84,26 +113,42 @@ export default new Vuex.Store({
                     commit('datos', data);
                 })
         },
-        async preguntas_get({ commit, state }) {
-            let token = document.querySelector('meta#token').getAttribute('content');
-            let pre = document.getElementById('carga')
-            pre.classList.remove('d-none');
-            pre.classList.add('d-flex');
-            state.nombre_filtrar = localStorage.getItem('grupo') || 0;
-            try {
-                const consulta = await fetch('preguntas/' + state.nombre_filtrar, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': token
-                    }
-                });
 
-                const resultado = await consulta.json();
-                commit('get_preguntas', resultado);
-            } catch (error) {
-                alertify.error("ha ocurrido un error, porfavor recarga la pagina");
-            }
+        async preguntas({ commit, state }) {
+            commit("loading", 1);
+            let resultado = await myFetch().get("preguntas");
+            commit("loading", 0);
+            commit('setPreguntas', resultado);
         },
+
+        async preguntasPopulares({ commit, state }) {
+            commit("loading", 1);
+            let resultado = await myFetch().get("preguntas/populares");
+            commit("loading", 0);
+            commit('setPreguntas', resultado);
+        },
+
+        async preguntasRecomendadas({ commit, state }) {
+            commit("loading", 1);
+            let resultado = await myFetch().get("preguntas/recomendadas");
+            commit("loading", 0);
+            commit('setPreguntas', resultado);
+        },
+
+        async preguntasPorGrupo({ commit, state }) {
+            commit("loading", 1);
+            let resultado = await myFetch().get(`preguntas/${state.referencia_grupo}`);
+            commit("loading", 0);
+            commit('setPreguntas', resultado);
+        },
+
+        async buscarPreguntas({ commit, state }) {
+            commit("loading", 1);
+            let resultado = await myFetch().get(`preguntas/buscar/{grupo}/{palabra}`);
+            commit("loading", 0);
+            commit('setPreguntas', resultado);
+        },
+
         async datos_user({ commit }) {
             let token = document.querySelector('meta#token').getAttribute('content');
             try {
@@ -116,9 +161,10 @@ export default new Vuex.Store({
                 const respuesta = await consulta.json();
                 commit('usuarios', respuesta);
             } catch (error) {
-                alertify.error("ha ocurrido un error, porfavor recarga la pagina");
+
             }
         },
+
         async groups({ commit }) {
             try {
                 const consulta = await fetch('grupos');
@@ -128,6 +174,7 @@ export default new Vuex.Store({
                 alertify.error("ha ocurrido un error, porfavor recarga la pagina de grupo");
             }
         },
+
         async notificaciones_ver({ commit, state }) {
             let pre = document.getElementById('carga')
             pre.classList.remove('d-none');
@@ -145,6 +192,7 @@ export default new Vuex.Store({
                 commit('get_notificaciones', state.notificaciones);
             }
         },
+
         async notificaciones_ver_recall({ commit, state }) {
             let pre = document.getElementById('carga')
             pre.classList.remove('d-none');
@@ -160,43 +208,25 @@ export default new Vuex.Store({
 
         },
         async comentarios({ commit, state }) {
-            let pre = document.getElementById('carga');
-            pre.classList.remove('d-none');
-            pre.classList.add('d-flex');
-            let token = document.querySelector('meta#token').getAttribute('content');
+            commit("loading", 1);
             try {
-                const consulta = await fetch('comentarios/' + state.id_pregunta, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': token
-                    }
-                });
-
-                const respuesta = await consulta.json();
-                commit('get_comentarios', respuesta);
+                const response = await myFetch().get('comentarios/' + state.id_pregunta);
+                commit('get_comentarios', response);
             } catch (error) {
                 alertify.error("ha ocurrido un error, porfavor recarga la pagina");
             }
-
+            commit("loading", 0);
         },
         async enviar_comentario({ state }) {
             try {
-                let token = document.querySelector('meta#token').getAttribute('content');
-                let formulario = new FormData();
-                formulario.append('comentario', state.comentario);
-                const consulta = await fetch('enviar/comentarios/' + state.pregunta.id, {
-                    method: 'POST',
-                    body: formulario,
-                    headers: {
-                        'X-CSRF-TOKEN': token
-                    }
+                const response = await myFetch().post('enviar/comentarios/' + state.pregunta.id, {
+                    body: { 'comentario': state.comentario }
                 });
-                const respuesta = await consulta.text();
-                if (respuesta == "1") {
+                if (response.status === 200) {
                     this.dispatch('comentarios');
                     alertify.success("Publicado");
                 } else {
-                    alertify.error("Error inesperado por favor vuela a enviar el comentario");
+                    throw (response.res);
                 }
             } catch (error) {
                 alertify.error("ha ocurrido un error, porfavor recarga la pagina");

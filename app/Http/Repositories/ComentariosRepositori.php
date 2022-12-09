@@ -9,21 +9,44 @@ use Illuminate\Support\Facades\DB;
 
 class ComentariosRepositori implements ComentariosInterface
 {
-    public function comentarios_init($id){
+    public function comentarios($id){
+
         $datos = DB::table('comentarios')->where('id_pregunta',$id)
         ->leftjoin('users','users.id','=','comentarios.id_usuario')
         ->select('comentarios.id','comentario','id_usuario','id_admin','id_pregunta','likes',
-        'nombre_apellido')->get();
+        'nombre_apellido')
+        ->get();
+
         $pregunta = DB::table('preguntas')
         ->leftjoin('users','users.id','=','preguntas.id_usuario')
         ->leftjoin('grupos','grupos.id','preguntas.id_grupo')
-        ->select('preguntas.*','nombre_apellido','grupos.grupo')->where("preguntas.id",$id)->first();
+        ->select('preguntas.*','nombre_apellido','grupos.grupo')
+        ->where("preguntas.id",$id)
+        ->first();
 
         $pregunta->created_at = Carbon::parse($pregunta->created_at)->diffForHumans();
-        return json_encode(["pregunta"=> $pregunta,"esLike" => [],"comentarios" => $datos, "likes_comentarios" => []],200);
+
+        if(auth()->user()){
+            $esLike = DB::table('likes')->where("id_pregunta",$id)->where("id_usuario",auth()->user()->id)->count();
+
+            $likes_comentarios = DB::table('like_comentario')->where('id_pregunta',$id)->where('id_user',Auth::user()->id)
+            ->get();
+        }
+        else{
+            $esLike = [];
+            $likes_comentarios = [];
+        }
+
+        return json_encode([
+            "pregunta"=> $pregunta,
+            "esLike" => $esLike,
+            "comentarios" => $datos,
+            "likes_comentarios" => $likes_comentarios
+        ],200);
+
     }
 
-    public function guardar_comentarios($request,$id){
+    public function guardarComentario($request,$id){
         DB::beginTransaction();
         try {
             $id_admin = DB::table('preguntas')->where('id',$id)->value('id_usuario');
@@ -53,7 +76,7 @@ class ComentariosRepositori implements ComentariosInterface
         }
     }
 
-    public function editar_comentarios($request,$id){
+    public function actualizarComentario($request,$id){
         DB::beginTransaction();
         try {
             $id_admin = DB::table('comentarios')->where('id',$id)->where('id_usuario',Auth::user()->id)->value('id_admin');
@@ -75,7 +98,7 @@ class ComentariosRepositori implements ComentariosInterface
         }
     }
 
-    public function eliminar_comentarios($id){
+    public function eliminarComentario($id){
         DB::beginTransaction();
         try {
             $id_pregunta = DB::table('comentarios')->where('id',$id)->value('id_pregunta');
@@ -95,28 +118,11 @@ class ComentariosRepositori implements ComentariosInterface
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollback();
-            return response()->json(["error" => "Error inesperado intenta mas tarde."], 200);
+            return response()->json(["errors" => ["err" => ["Error inesperado, intenta mas tarde"]]], 402);
         }
     }
 
-    public function comentarios($id){
-        $datos = DB::table('comentarios')->where('id_pregunta',$id)
-        ->leftjoin('users','users.id','=','comentarios.id_usuario')
-        ->select('comentarios.id','comentario','id_usuario','id_admin','id_pregunta','likes',
-        'nombre_apellido')->get();
-        $pregunta = DB::table('preguntas')
-        ->leftjoin('users','users.id','=','preguntas.id_usuario')
-        ->leftjoin('grupos','grupos.id','preguntas.id_grupo')
-        ->select('preguntas.*','nombre_apellido','grupos.grupo')->where("preguntas.id",$id)->first();
-        $esLike = DB::table('likes')->where("id_pregunta",$id)->where("id_usuario",auth()->user()->id)->count();
-
-        $likes_comentarios = DB::table('like_comentario')->where('id_pregunta',$id)->where('id_user',Auth::user()->id)
-        ->get();
-        $pregunta->created_at = Carbon::parse($pregunta->created_at)->diffForHumans();
-        return json_encode(["pregunta"=> $pregunta,"esLike" => $esLike,"comentarios" => $datos, "likes_comentarios" => $likes_comentarios],200);
-    }
-
-    public function likes_comentarios($datos){
+    public function likesComentarios($datos){
         $likes_comentarios = DB::table('like_comentario')->where('id_comentario',$datos)->where('id_user',Auth::user()->id)
         ->count();
         if($likes_comentarios > 0){

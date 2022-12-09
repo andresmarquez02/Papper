@@ -4,36 +4,48 @@ use Illuminate\Support\Facades\Route;
 // DB::listen(function($query){
 //     echo $query->sql;
 // });
-Route::middleware(['guest'])->group(function () {
-    Route::get('/', 'login_register@index');
-    Route::post('login', 'login_register@store');
-    Route::post('register', 'login_register@register');
-});
 
-//Rutas para preguntas y comentarios
-Route::post('preguntas/{grupo}', 'PreguntasController@preguntas');
-Route::post('comentarios/{id}', 'ComentariosController@comentarios');
+// Ruta inicial
+Route::get('/', 'HomeController@index');
+
+//Rutas para preguntas
+Route::get('preguntas', 'PreguntasController@preguntas');
+Route::get('preguntas/populares', 'PreguntasController@preguntasPopulares');
+Route::get('preguntas/recomendadas', 'PreguntasController@preguntasRecomendadas');
+Route::get('preguntas/{grupo}', 'PreguntasController@preguntasPorGrupo');
+Route::get('preguntas/buscar/{grupo}/{palabra}', 'PreguntasController@buscarPreguntas');
+
+// Comentarios
+Route::get('comentarios/{id}', 'ComentariosController@comentarios');
+
+// Grupos
 Route::get('grupos', 'usuarioController@grupos');
-Route::post('filtrado/{grupo}/{palabra}', 'PreguntasController@filtrado');
+
+// Rutas solo para cuando no se este logueado
+Route::middleware(['guest'])->group(function () {
+    Route::post('login', 'AuthController@login');
+    Route::post('register', 'AuthController@register');
+});
 
 Route::middleware(['auth'])->group(function () {
     //usuario y datos
-    Route::get('/home', 'usuarioController@index');
+    // Route::get('/home', 'usuarioController@index');
     Route::post('usuario', 'usuarioController@usuario');
     Route::get('notificaciones', 'usuarioController@notificaciones');
 
     //Preguntas
-    Route::post('guardar', 'PreguntasController@store');
-    Route::post('editar_pregunta/{id}', 'PreguntasController@editar_pregunta');
-    Route::post('eliminar_pregunta/{id}', 'PreguntasController@eliminar_pregunta');
-    Route::post('like/{id_pregunta}', 'PreguntasController@likes');
+    Route::post('crear/pregunta', 'PreguntasController@crearPregunta');
+    Route::put('actualizar/pregunta/{id}', 'PreguntasController@actualizarPregunta');
+    Route::delete('eliminar/pregunta/{id}', 'PreguntasController@eliminarPregunta');
+    Route::post('like/{idPregunta}', 'PreguntasController@likes');
 
     //Comentarios
-    Route::post('enviar/comentarios/{id}', 'ComentariosController@guardar_comentarios');
-    Route::post('like/comentarios/{like}', 'ComentariosController@likes_comentarios');
-    Route::post('eliminar_comentario/{id}', 'ComentariosController@eliminar_comentarios');
-    // Route::post('/papper/editar_comentario/{id}', 'usuarioController@editar_comentarios');
+    Route::post('guardar/comentario/{id}', 'ComentariosController@guardarComentario');
+    Route::post('like/comentario/{like}', 'ComentariosController@likesComentarios');
+    Route::post('eliminar/comentario/{id}', 'ComentariosController@eliminarComentario');
+    // Route::post('actualizar/comentario/{id}', 'usuarioController@actualizarComentario');
 
-    Route::get('logout', 'usuarioController@logout');
+    // Desloguearme
+    Route::get('logout', 'AuthController@logout');
 });
 

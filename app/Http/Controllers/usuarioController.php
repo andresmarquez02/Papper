@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\DB;
 
 class usuarioController extends Controller
 {
-    public function index(){
-        return view('papper.home');
-    }
     public function usuario(){
         if(! Cache::has('usuario')){
             Cache::forever('usuario', Auth::user());
@@ -30,14 +27,7 @@ class usuarioController extends Controller
         $datos = DB::table('notificaciones')->where('id_admin',Auth::user()->id)
         ->where('id_user_autor','!=',Auth::user()->id)
         ->orderBy('id','desc')->get();
-        return json_encode($datos);
-    }
 
-    public function logout()
-    {
-        session()->flush();
-        Cache::flush();
-        Auth::logout();
-        return redirect('/');
+        return response()->json($datos, 200);
     }
 }
