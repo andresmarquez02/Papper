@@ -16,7 +16,7 @@ export function myFetch() {
         if (!options.body) delete options.body;
         setTimeout(() => controller.abort(), 10000);
 
-        let c = await fetch("http://127.0.0.1:8000/" + endpoint, options)
+        let c = await fetch(process.env.MIX_APP_URL+endpoint, options)
         let res = await c.json();
 
         if (c.status !== 500) {

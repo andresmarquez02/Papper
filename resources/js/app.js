@@ -1,36 +1,47 @@
 // Bootstrap
 require('./bootstrap');
-
 // Vue
 window.Vue = require('vue');
-
 // Componentes principales
 Vue.component('papper', require('./Papper.vue').default);
-
-// Vistas
-Vue.component('login', require('./views/Login.vue').default);
-Vue.component('registro', require('./views/Registro.vue').default);
-
-// Componentes
-// Componentes de preguntas
-Vue.component('preguntas', require('./components/Preguntas.vue').default);
-Vue.component('Pregunta', require('./components/Pregunta.vue').default);
-Vue.component('ModalEditarPregunta', require('./components/ModalEditarPregunta.vue').default);
-Vue.component('ModalEliminarPregunta', require('./components/ModalEliminarPregunta.vue').default);
-Vue.component('crear-pregunta', require('./components/CrearPregunta.vue').default);
-Vue.component('filtrado-pregunta', require('./components/FiltradoPregunta.vue').default);
-Vue.component('ver-pregunta', require('./components/VerPregunta.vue').default);
+// Componentes de estructuras de la aplicacion
 Vue.component('aside-left', require('./components/AsideLeft.vue').default);
-Vue.component('comentario', require('./components/Comentario.vue').default);
-Vue.component('navBar', require('./components/NavBar.vue').default);
-Vue.component('contenido', require('./components/Contenido.vue').default);
-Vue.component('eliminarComentario', require('./components/EliminarComentario.vue').default);
+Vue.component('nav-bar', require('./components/NavBar.vue').default);
+Vue.component('dashboard', require('./components/Dashboard.vue').default);
+
+// Componentes de publicaciones
+Vue.component('posts', require('./components/Posts.vue').default);
+Vue.component('post', require('./components/Post.vue').default);
+Vue.component('edit-post', require('./components/EditPost.vue').default);
+Vue.component('delete-post', require('./components/DeletePost.vue').default);
+Vue.component('create-post', require('./components/CreatePost.vue').default);
+Vue.component('search-post', require('./components/SearchPost.vue').default);
+Vue.component('denuncied-post', require('./components/DenunciedPost.vue').default);
+
+// Componentes de comentarioss
+Vue.component('see-post', require('./components/SeePost.vue').default);
+Vue.component('commentary', require('./components/Commentary.vue').default);
+Vue.component('delete-commentary', require('./components/DeleteCommentary.vue').default);
+Vue.component('create-commentary', require('./components/CreateCommentary.vue').default);
+
+// Componentes ADMIN
+// Componentens de categorias ADMIN
+Vue.component('editsert-category', require('./components/admin/CreateEditCategory.vue').default);
+Vue.component('status-category', require('./components/admin/StatusCategory.vue').default);
+// Componentes de denuncias ADMIN
+Vue.component('editsert-denunciation', require('./components/admin/CreateEditDenunciation.vue').default);
+Vue.component('status-denunciation', require('./components/admin/StatusDenunciation.vue').default);
+// COmponentes de publicaciones denunciados
+Vue.component('denunciations-post', require('./components/admin/DenunciationsPost.vue').default);
+// Componentes para usuarios
+Vue.component('user', require('./components/admin/User.vue').default);
+
 
 // Rutas
-import router from './routes/rutas.js'
-
+import router from './routes/index.js'
 // Estado
-import store from './store/store.js'
+import store from './store/index.js'
+// Vuelidate para las validaciones
 import Vuelidate from 'vuelidate';
 Vue.use(Vuelidate);
 

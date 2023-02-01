@@ -1,6 +1,7 @@
-export default function auth({ next, router }) {
-    if (localStorage.getItem('logueado') == "Si") {
-        return router.push({ name: 'principal' });
+export default function log({ next, router }) {
+    if (localStorage.getItem('authenticate') == "false") {
+        router.push({ name: 'index' })
+        return router.push({ name: 'login' });
     }
     return next();
 }

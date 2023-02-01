@@ -12,31 +12,41 @@ use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
-    public function login(LoginRequest $request)
+    public function login(Request $request)
     {
+        $this->validate($request,[
+            'email' => 'required|email|min:5|max:100',
+            'password' => 'required|min:5|max:254'
+        ]);
         // Verificacion de los datos y logueo
-        if(Auth::attempt(['email' => $request->correo, 'password' => $request->contrasena])){
-            return response()->json(["exito" => "Iniciando Sesion"],200);
+        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
+            return response()->json(["success" => "Iniciando Sesion"],200);
         }
         else{
             return response()->json(["errors" => ["err" => ["Las credenciales son incorrectas"]]], 402);
         }
     }
 
-    public function register(RegistroRequest $request){
+    public function register(Request $request){
+        $this->validate($request,[
+            'username' => 'required|string|min:5|max:100|unique:users,username',
+            'email' => 'required|email|min:5|max:100|unique:users,email',
+            'password' => 'required|min:5|max:254|confirmed'
+        ]);
         // Inicio de la transaccion
         DB::beginTransaction();
         try {
             // GUardado del usuario en la bd
             User::create([
-                'nombre_apellido' => $request->usuario,
-                'email' => $request->correo,
-                'password' => bcrypt($request->contrasena),
+                'username' => $request->username,
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+                'role_id' => 2,
             ]);
             // COmmit a la transaccion para que se ejecuten los cambios
             DB::commit();
             // Respuesta final
-            return response()->json(["exito" => "Cuenta creada con exito"], 200);
+            return response()->json(["success" => "Cuenta creada con exito"], 200);
         } catch (\Throwable $th) {
             // Rollback para que los cambios se borren
             DB::rollback();
