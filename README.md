@@ -65,5 +65,5 @@ Para que el sistema funcione correctamente debes escribir este comando
 - [@andresmarquez](https://www.github.com/andresmarquez02)
 
 ## 🔗 Links
-[![portafolio](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://andresmarquez02.github.io/andres/)
+[![portafolio](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://andresmarquez02.github.io/)
 [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/andres-marquez-02/)
