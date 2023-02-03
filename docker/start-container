@@ -8,7 +8,6 @@ if [ ! -d /.composer ]; then
     mkdir /.composer
 fi
 
-npm install
 composer install
 chmod -R ugo+rw /.composer
 
