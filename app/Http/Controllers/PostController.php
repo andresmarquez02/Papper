@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Denunciation;
+use App\Models\Denunciation;
 use App\Http\Requests\PostRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Category;
-use App\Commentary;
-use App\Notification;
-use App\Post;
-use App\PostsDenunciation;
-use App\Reaction;
-use App\User;
+use App\Models\Category;
+use App\Models\Commentary;
+use App\Models\Notification;
+use App\Models\Post;
+use App\Models\PostsDenunciation;
+use App\Models\Reaction;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -27,7 +27,12 @@ class PostController extends Controller
     public function profileUser($username){
 
         $posts = $this->postsDB()->where("username", $username);
-        $user = User::where("username",$username)->select("username","created_at")->first();
+        $user = User::where("username",$username)->select("username","created_at")->firstOrFail();
+
+        $user = collect([
+            "username" => $user->username,
+            "created_at" => Carbon::parse($user->created_at)->format("d/m/Y"),
+        ]);
 
         return response()->json([ "posts" => $posts, "user" => $user, "countPosts" =>  $posts->count()], 200);
     }

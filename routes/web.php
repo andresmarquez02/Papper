@@ -1,64 +1,71 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentaryController;
+use App\Http\Controllers\DenunciationController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Ruta inicial
-Route::get('/', 'HomeController@index');
+Route::view('/', 'index');
 //Rutas para l ver publicaciones y busquedas de ellas
-Route::get('posts', 'PostController@posts');
-Route::get('posts/populars', 'PostController@postsPopulars');
-Route::get('posts/recommends', 'PostController@postsRecommends');
-Route::get('posts/{category}', 'PostController@postsByCategory');
-Route::get('posts/search/{category}/{query}', 'PostController@searchPosts');
+Route::get('posts', [PostController::class, 'posts']);
+Route::get('posts/populars', [PostController::class, 'postsPopulars']);
+Route::get('posts/recommends', [PostController::class, 'postsRecommends']);
+Route::get('posts/{category}', [PostController::class, 'postsByCategory']);
+Route::get('posts/search/{category}/{query}', [PostController::class, 'searchPosts']);
 
 // Comentarios
-Route::get('commentaries/{id}', 'CommentaryController@commentaries');
+Route::get('commentaries/{id}', [CommentaryController::class, 'commentaries']);
 // Categorias
-Route::get('categories', 'HomeController@categories');
+Route::get('categories', [HomeController::class, 'categories']);
 
 // Rutas solo para cuando no se este logueado
 Route::middleware(['guest'])->group(function () {
-    Route::post('login', 'AuthController@login');
-    Route::post('register', 'AuthController@register');
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('register', [AuthController::class, 'register']);
 });
 
 Route::middleware(['auth'])->group(function () {
     //usuario y datos
-    Route::post('user', 'UserController@user');
-    Route::get('notifications', 'UserController@notifications');
+    Route::post('user', [UserController::class, 'user']);
+    Route::get('notifications', [UserController::class, 'notifications']);
 
     // Ver perfil de usuario
-    Route::get('profile/{username}', 'PostController@profileUser');
+    Route::get('profile/{username}', [PostController::class, 'profileUser']);
 
     //posts
-    Route::post('create/post', 'PostController@createPost');
-    Route::put('update/post/{id}', 'PostController@updatePost');
-    Route::delete('delete/post/{id}', 'PostController@deletePost');
-    Route::post('reacted/{postId}', 'PostController@reactedPost');
+    Route::post('create/post', [PostController::class, 'createPost']);
+    Route::put('update/post/{id}', [PostController::class, 'updatePost']);
+    Route::delete('delete/post/{id}', [PostController::class, 'deletePost']);
+    Route::post('reacted/{postId}', [PostController::class, 'reactedPost']);
 
     // Denuncias a posts
-    Route::get('denunciations', 'PostController@denunciations');
-    Route::post('denuncied/post/{id}', 'PostController@denunciedPost');
+    Route::get('denunciations', [PostController::class, 'denunciations']);
+    Route::post('denuncied/post/{id}', [PostController::class, 'denunciedPost']);
 
     //Comentarios
-    Route::post('create/commentary/{id}', 'CommentaryController@saveCommentary');
-    Route::post('reacted/commentary/{commentaryId}', 'CommentaryController@reactionCommentaries');
-    Route::post('delete/commentary/{id}', 'CommentaryController@deleteCommentary');
-    // Route::post('update/commentary/{id}', 'CommentaryController@updateCommentary');
+    Route::post('create/commentary/{id}', [CommentaryController::class, 'saveCommentary']);
+    Route::post('reacted/commentary/{commentaryId}', [CommentaryController::class, 'reactionCommentaries']);
+    Route::post('delete/commentary/{id}', [CommentaryController::class, 'deleteCommentary']);
+    // Route::post('update/commentary/{id}', [CommentaryController::class, 'updateCommentary']);
 
     // RUTAS ADMIN
     Route::middleware(['admin'])->group(function () {
         Route::prefix('admin')->group(function () {
             Route::resource('categories', CategoryController::class);
             Route::resource('denunciations', DenunciationController::class);
-            Route::get('posts/denuncied', 'PostController@postsDenuncied');
-            Route::get('denunciations/post/{id}', 'PostController@denunciationsPost');
-            Route::post('close/post/{id}', 'PostController@closePost');
-            Route::get('users', 'UserController@users');
-            Route::get('change/status/account/{id}', 'UserController@changeStatusAccount');
+            Route::get('posts/denuncied', [PostController::class, 'postsDenuncied']);
+            Route::get('denunciations/post/{id}', [PostController::class, 'denunciationsPost']);
+            Route::post('close/post/{id}', [PostController::class, 'closePost']);
+            Route::get('users', [UserController::class, 'users']);
+            Route::get('change/status/account/{id}', [UserController::class, 'changeStatusAccount']);
         });
     });
     // Desloguearme
-    Route::get('logout', 'AuthController@logout');
+    Route::get('logout', [AuthController::class, 'logout']);
 });
 

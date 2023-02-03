@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Category;
-use App\Notification;
-use App\User;
-use Illuminate\Http\Request;
+use App\Models\Notification;
+use App\Models\User;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {

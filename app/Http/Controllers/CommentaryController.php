@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Commentary;
-use App\Notification;
-use App\Post;
-use App\Reaction;
+use App\Models\Commentary;
+use App\Models\Notification;
+use App\Models\Post;
+use App\Models\Reaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

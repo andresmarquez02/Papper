@@ -21,7 +21,7 @@ class CreatePostsTable extends Migration
             $table->integer('user_id');
             $table->integer('reactions')->nullable()->default(0);
             $table->integer('commentaries')->nullable()->default(0);
-            $table->integer('status',100)->nullable()->default(1);
+            $table->integer('status')->nullable()->default(1);
             $table->timestamps();
         });
     }
