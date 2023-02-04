@@ -1,7 +1,9 @@
 <template>
     <div class="pt-3 pb-3">
         <div v-if="post !== null">
-            <post :post="post" keyPost="1" :setDenunciations="setDenunciations"/>
+            <post :post="post" keyPost="1" :setDenunciations="setDenunciations" :modelEdit="modelEdit" :modelDelete="modelDeletePost"/>
+            <edit-post :post="postEdit"/>
+            <delete-post :postId="postId"/>
             <denunciations-post :denunciations="denunciations" />
         </div>
         <div  v-for="(commentary, key) in commentaries" :key="commentary.id">
@@ -12,8 +14,8 @@
                 <delete-commentary :commentaryId="commentaryId" :getCommentaries="getCommentaries"/>
             </div>
         </div>
-        <div class="px-4 pt-4 pb-2 my-3" v-if="commentaries === ''">
-            <h2 class="text-center font-weight-bold">Sin commentaries...</h2>
+        <div class="px-4 pt-4 pb-2 my-3" v-if="commentaries.length === 0">
+            <h2 class="text-center font-weight-bold">Sin commentarios...</h2>
         </div>
         <create-commentary :getCommentaries="getCommentaries" :postId="post.id" />
     </div>
@@ -28,7 +30,9 @@
                 commentaries :[],
                 post: [],
                 commentaryId: 0,
-                denunciations: {}
+                denunciations: {},
+                postEdit: {},
+                postId: 0
             };
         },
         mounted() {
@@ -46,13 +50,18 @@
                     this.loading(false);
                     alertify.error("ha ocurrido un error, porfavor recarga la pagina");
                 }
-
             },
             modelDelete(id){
                 this.commentaryId = id;
             },
             setDenunciations(denunciations){
                 this.denunciations = denunciations;
+            },
+            modelEdit(post){
+                this.postEdit = post;
+            },
+            modelDeletePost(id){
+                this.postId = id;
             },
             ...Vuex.mapMutations(['loading']),
         },

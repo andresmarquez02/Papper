@@ -3,10 +3,16 @@
         <div class="pt-4 mt-3 mb-2 px-lg-4" v-if="user !== null">
             <form v-on:submit.prevent="createCommentary()">
                 <div class="mb-1 input-group">
-                    <textarea class="form-control" v-model="commentary" placeholder="comentario..." aria-describedby="button-addon2"
-                    :class="{
-                      'is-invalid': submitted && $v.commentary.$error
-                    }"></textarea>
+                    <textarea
+                        class="form-control"
+                        v-model="commentary"
+                        placeholder="comentario..."
+                        aria-describedby="button-addon2"
+                        :class="{
+                            'is-invalid': submitted && $v.commentary.$error
+                        }"
+                        rows="2"
+                    ></textarea>
                     <div class="input-group-append">
                         <button class="px-3 btn btn-opacity-primary waves-effect-light" type="submit" id="button-addon2">
                             <i class="fa fa-paper-plane" aria-hidden="true"></i>

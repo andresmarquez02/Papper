@@ -20,11 +20,6 @@
         <script src="{{asset('js/waves.js')}}"></script>
         <script src="{{asset('alertify/alertify.js')}}"></script>
         <script src="{{asset('js/app.js')}}"></script>
-        <script>
-            $(function () {
-                $('[data-toggle="tooltip"]').tooltip()
-            })
-        </script>
     </body>
 </html>
 

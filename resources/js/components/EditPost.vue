@@ -96,7 +96,6 @@
         },
         methods: {
             ...Vuex.mapMutations(["loading"]),
-            ...Vuex.mapActions(['getPosts']),
 
             async updatePost(){
                 this.submitted = true;
@@ -112,7 +111,6 @@
                         body: this.post
                     });
                     if(response.status === 200){
-                        this.getPosts();
                         let obj = document.getElementById('cerrarEditar');
                         obj.click();
                         alertify.success("Publicacion actualizada con exito");

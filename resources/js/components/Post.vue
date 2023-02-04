@@ -26,10 +26,22 @@
         </div>
         <div class="mt-2">
             <h5 class="mb-1 font-weight-bold position-relative">{{ post.title }}</h5>
-            <p class="mb-1 text-muted">
+            <p class="mb-1 text-muted" v-if="$route.name === 'index'">
                 {{post.description.substring(0, 200)}}
-                <span v-if="post.description.length >200" class="text-primary">Ver mas...</span>
-                <!-- <i class="fa fa-quote-right ss-small" aria-hidden="true"></i> -->
+                <span v-if="post.description.length >200">
+                    <router-link
+                        class="text-primary"
+                        :to="'/commentaries/'+post.id"
+                        style="text-decoration:none"
+                    >
+                        <span>
+                            Ver más...
+                        </span>
+                    </router-link>
+                </span>
+            </p>
+            <p class="mb-1 text-muted" v-else>
+                {{post.description}}
             </p>
             <div class="mb-2">
                 <small><i class="fa fa-hashtag" aria-hidden="true"></i> {{post.category}}</small>

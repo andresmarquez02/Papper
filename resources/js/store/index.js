@@ -32,13 +32,13 @@ export default new Vuex.Store({
         },
 
         setUser(state, data) {
-            if(data.status === 200){
+            if (data.status === 200) {
                 state.user = data.res.user;
                 localStorage.setItem("authenticate", true);
-                localStorage.setItem("role",state.user.role_id);
+                localStorage.setItem("role", state.user.role_id);
             } else {
                 localStorage.setItem("authenticate", false);
-                localStorage.setItem("role",0);
+                localStorage.setItem("role", 0);
             }
         },
 
@@ -79,6 +79,9 @@ export default new Vuex.Store({
                 carga.classList.remove("d-flex");
                 carga.classList.add("d-none");
             }
+        },
+        deletePostStore(state, postId) {
+            state.posts = state.posts.filter(post => (post.id != postId));
         }
     },
     actions: {
@@ -127,9 +130,9 @@ export default new Vuex.Store({
         },
 
         async getUser({ commit }) {
-            if(localStorage.getItem("authenticate") == "true"){
+            if (localStorage.getItem("authenticate") == "true") {
                 commit("loading", 1);
-                let response = await myFetch().post('user',{body:{}});
+                let response = await myFetch().post('user', { body: {} });
                 commit("loading", 0);
                 commit('setUser', response);
             }

@@ -59,6 +59,12 @@ Para que el sistema funcione correctamente debes escribir este comando
 ```bash
     php artisan serve
 ```
+## Usuarios con los que te puedes loguear en Papper
+
+| Correo    | Contraseña     | Rol                |
+| :-------- | :------- | :------------------------- |
+| `admin@papper.com` | `123123` | Admin |
+| `andres03marquez@gmail.com` | `123123` | Natural |
 
 ## Autor
 

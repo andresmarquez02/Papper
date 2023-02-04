@@ -12,7 +12,7 @@
                             </span>
                         </div>
                     </div>
-                    <template v-for="notification in notifications">
+                    <template v-for="notification in notifications" >
                         <span class="py-3 dropdown-item" :key="notification.id">
                             <router-link :to="{name: 'profile', params: {username: notification.username}}" class="text-primary">
                                 @{{ notification.username }}
@@ -22,7 +22,7 @@
                             </router-link>
                         </span>
                     </template>
-                    <span class="dropdown-item" v-if="notifications === ''">
+                    <span class="dropdown-item text-center" v-if="notifications.length === 0">
                     No tienes notificaciones</span>
                 </div>
             </div>

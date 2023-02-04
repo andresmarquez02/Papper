@@ -40,7 +40,7 @@ class PostController extends Controller
     public function postsPopulars(){
         $posts = $this->postsDB()
         ->sortByDesc("reactions")
-        ->sortByDesc('comentaries')
+        ->sortByDesc('commentaries')
         ->values()
         ->all();
 
@@ -51,7 +51,7 @@ class PostController extends Controller
         $posts = $this->postsDB()
         ->whereIn('category', ["Lexachange", "Lexa","change"])
         ->sortByDesc('reactions')
-        ->sortByDesc('comentaries')
+        ->sortByDesc('commentaries')
         ->values()
         ->all();
 
@@ -191,8 +191,8 @@ class PostController extends Controller
             Notification::where("content_id",$id)->where("table","posts")->delete();
 
             Reaction::where("content_id",$id)->where("table","posts")->delete();
-            Reaction::join("comentaries","comentaries.id","reactions.content_id")
-            ->where("table","comentaries")
+            Reaction::join("commentaries","commentaries.id","reactions.content_id")
+            ->where("table","commentaries")
             ->where("post_id",$id)
             ->delete();
 

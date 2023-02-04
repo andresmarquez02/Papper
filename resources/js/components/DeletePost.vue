@@ -28,14 +28,19 @@
     export default {
         props: ['postId'],
         methods: {
-            ...Vuex.mapMutations(["loading"]),
+            ...Vuex.mapMutations(["loading",'deletePostStore']),
             ...Vuex.mapActions(['getPosts']),
 
             async deletePost(){
                 this.loading(true);
                 let response = await myFetch().del('delete/post/'+this.postId);
                 if(response.status === 200){
-                    this.getPosts();
+                    if(this.$route.name === "commentaries"){
+                        this.deletePostStore(this.postId);
+                        this.$router.go(-1);
+                    } else{
+                        this.deletePostStore(this.postId);
+                    }
                     this.loading(false);
                     alertify.success("Publicacion eliminada con exito.");
                     return 0;
