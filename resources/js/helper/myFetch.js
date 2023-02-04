@@ -16,7 +16,7 @@ export function myFetch() {
         if (!options.body) delete options.body;
         setTimeout(() => controller.abort(), 10000);
 
-        let c = await fetch(window.location.origin + endpoint, options)
+        let c = await fetch(window.location.origin + "/" + endpoint, options)
         let res = await c.json();
 
         if (c.status !== 500) {

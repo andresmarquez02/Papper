@@ -1,7 +1,7 @@
 // Bootstrap
 require('./bootstrap');
 // Vue
-window.Vue = require('vue');
+window.Vue = require('vue').default;
 // Componentes principales
 Vue.component('papper', require('./Papper.vue').default);
 // Componentes de estructuras de la aplicacion

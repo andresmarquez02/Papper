@@ -27,10 +27,9 @@ import admin from '../middlewares/admin'
 Vue.use(VueRouter);
 
 const router = new VueRouter({
-    base: 'http://127.0.0.1:8000/',
+    base: window.location.origin + "/",
     // mode: 'history',
-    routes: [
-        {
+    routes: [{
             path: '/',
             name: 'index',
             component: Index,
